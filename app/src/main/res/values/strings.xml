@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">My Application8</string>
+    <string name="text_username_login">Username</string>
+    <string name="text_password_login">Password</string>
+    <string name="text_login_btn">Login</string>
+    <string name="text_cancel_btn">Cancel</string>
+    <string name="text_demo_mode">Demo Mode</string>
+
 </resources>

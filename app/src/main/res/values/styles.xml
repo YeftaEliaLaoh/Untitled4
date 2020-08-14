@@ -7,5 +7,10 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="loginThemeEditText" parent="@android:style/Widget.EditText">
+        <item name="colorControlNormal">@color/layout_white</item>
+        <item name="android:textColorHint">@color/layout_white</item>
+    </style>
+
 
 </resources>
