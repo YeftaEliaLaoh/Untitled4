@@ -8,5 +8,9 @@
     <color name="layout_white">#FFFFF0</color>
     <color name="colorRed">#FF1111</color>
     <color name="default_grey_label">#aeaeae</color>
+    <color name="blue_component">#61b3ff</color>
+    <color name="blue_component_clicked">#527eac</color>
+    <color name="white">#ffffff</color>
+    <color name="colorRedClicked">#b8353a</color>
 
 </resources>
