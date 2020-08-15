@@ -1,4 +1,3 @@
-/*
 package com.example.myapplication8.controllers;
 
 import android.app.AppOpsManager;
@@ -9,20 +8,12 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.v4.content.res.ResourcesCompat;
 import android.widget.Toast;
 
-import com.firstwap.celltrax.BuildConfig;
-import com.firstwap.celltrax.R;
-import com.firstwap.celltrax.activities.MainActivity;
-import com.firstwap.celltrax.controllers.GoogleMapController;
-import com.firstwap.celltrax.controllers.OpenStreetMapController;
-import com.firstwap.celltrax.databases.CelltraxDB;
-import com.firstwap.celltrax.utils.CellCalculation;
-import com.firstwap.celltrax.utils.Global;
-import com.firstwap.celltrax.utils.PinLocationProvider;
-import com.firstwap.celltrax.utils.Utility;
-import com.firstwap.celltrax.utils.locationapi.Place;
+
+import com.example.myapplication8.activities.MainActivity;
+import com.example.myapplication8.models.MapSingleton;
+import com.example.myapplication8.utilities.Config;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -87,7 +78,7 @@ public class MapController
 
     public void registerEventMapWrapper()
     {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.registerEventGmap(registerEventGmap);
         }
@@ -129,11 +120,11 @@ public class MapController
             return;
         }
 
-        if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.addCircleWithZoom(location.getLatitude(), location.getLongitude(), location.getAccuracy());
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.addColorToAreaWithZoom(location.getLatitude(), location.getLongitude());
         }
@@ -152,11 +143,11 @@ public class MapController
 
     public void zoomToBound( LatLngBounds centerBound )
     {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.animateCameraToBound(centerBound);
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.animateCameraPosition(centerBound);
         }
@@ -185,11 +176,11 @@ public class MapController
             radius = radius + 103;
             currentCell.setAccuracy(radius);
 
-            if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
             {
                 calculation.addCircleOsm(openStreetMapController.addColorToArea(currentCell.getLatitude(), currentCell.getLongitude(), radius, radio.getMeasuredRadio().getColor(), radio.getOutlineColor()));
             }
-            else if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
             {
                 calculation.addCircle(gmapController.addColorToAreaWithType(currentCell.getLatitude(), currentCell.getLongitude(), radius, radio.getMeasuredRadio().getColor(), radio.getOutlineColor()));
             }
@@ -230,7 +221,7 @@ public class MapController
                 radius = radio.getMinCell();
             }
             radius = radius + 103;
-            if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
             {
                 if( currentWifi.getLatitude() != 0 && currentWifi.getLongitude() != 0 )
                 {
@@ -238,7 +229,7 @@ public class MapController
                 }
 
             }
-            else if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
             {
                 if( currentWifi.getLatitude() != 0 && currentWifi.getLongitude() != 0 )
                 {
@@ -268,7 +259,7 @@ public class MapController
 
         if( radio.getCalculatedAreaIcon().isShowing() )
         {
-            if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
             {
                 if( cellCalculation.getClusteredMarker().getType() == Global.SCANNED_TYPE_CELL )
                 {
@@ -279,7 +270,7 @@ public class MapController
                     gmapController.addClusterItem2(cellCalculation.getClusteredMarker());
                 }
             }
-            else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
             {
                 Marker markerOsm = openStreetMapController.addItemMarker(cellCalculation.getClusteredMarker());
                 cellCalculation.setCenterMarkerOptionsOsm(markerOsm);
@@ -292,7 +283,7 @@ public class MapController
         {
             radioCenterEllipseColor = radio.getCalculatedAreaEllipse().getColor();
 
-            if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
             {
                 PolygonOptions polygonOptions = cellCalculation.getCenterPolygonOptions(radioCenterEllipseColor, radioOutlineColor);
                 if( polygonOptions != null )
@@ -300,7 +291,7 @@ public class MapController
                     cellCalculation.setCenterPolygon(gmapController.drawPolygonOnMap(polygonOptions));
                 }
             }
-            else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
             {
                 org.osmdroid.views.overlay.Polygon centerPolygonOsm = cellCalculation.getCenterPolygonOptionsOsm(openStreetMapController.getContext(), radioCenterEllipseColor, radioOutlineColor);
                 cellCalculation.setCenterPolygonOsm(centerPolygonOsm);
@@ -312,7 +303,7 @@ public class MapController
         {
             radioCenterPolygonColor = radio.getCalculatedAreaPolygon().getColor();
 
-            if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
             {
                 PolygonOptions po = cellCalculation.setHullPolylineOptions(radioCenterPolygonColor, radioOutlineColor);
                 if( po != null && po.getPoints().size() > 0 )
@@ -320,7 +311,7 @@ public class MapController
                     cellCalculation.setPolyline(gmapController.drawPolygonOnMap(po));
                 }
             }
-            else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
             {
                 Polyline polyline = cellCalculation.getHullPolylineOptionsOsm(radioCenterPolygonColor);
                 cellCalculation.setPolylineOsm(openStreetMapController.addPolyline(polyline));
@@ -390,12 +381,12 @@ public class MapController
         }
 
 
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.addColorToAreaWithType(location.getLatitude(), location.getLongitude(), radius, color, outlineColor);
 
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             if( location.getLatitude() != 0 && location.getLongitude() != 0 )
             {
@@ -407,11 +398,11 @@ public class MapController
     public void addLocationArrowMarker( double latitude, double longitude, int marker )
     {
         Drawable icon = ResourcesCompat.getDrawable(openStreetMapController.getContext().getResources(), marker, null);
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.addLocationArrowMarker(new LatLng(latitude, longitude), marker);
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             Marker osmMarker = openStreetMapController.addLocationMarker(latitude, longitude, icon);
             if( null != mainActivity.getGooglePlacesController().getPlace() )
@@ -423,172 +414,24 @@ public class MapController
 
     public void addLocationPolyline( PolylineOptions polylineOptions, Polyline polyline )
     {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.addPolyLine(polylineOptions, polylineOptions.getColor());
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.addPolyline(polyline);
         }
     }
 
-
-    public void drawLocationBasedOnSelectedProfile( CellCalculation cellCalculation, SettingLocation location )
-    {
-        SettingSubProfileItem gpsAcc = location.getGpsAccuracy();
-        SettingSubProfileItem radioCount = location.getLocationRadioCount();
-        SettingSubProfileItem lineRoute = location.getLineOfRoute();
-        SettingSubProfileItem centerPoint = location.getCenterPointIcon();
-        int outlineColor = location.getOutlineColor();
-
-        PolylineOptions polylineOptions = new PolylineOptions();
-        Polyline polyline = new Polyline();
-
-        if( cellCalculation.getCurrentScannedType() == Global.SCANNED_TYPE_CELL )
-        {
-            for( Cell cell : cellCalculation.getCellList() )
-            {
-                if( gpsAcc.isShowing() )
-                {
-                    if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                    {
-                        cellCalculation.addLocationListMarker(gmapController.
-                                addCellLocation(cell, gpsAcc.getColor(), cell.getMeasuredLocation().getAccuracy(), outlineColor));
-                    }
-                    else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                    {
-                        cellCalculation.addLocationListMarkerOsm(openStreetMapController.
-                                addColorToArea(cell.getMeasuredLocation().getLatitude(), cell.getMeasuredLocation().getLongitude(), cell.getMeasuredLocation().getAccuracy(), gpsAcc.getColor(), location.getOutlineColor()));
-                    }
-
-                }
-                if( radioCount.isShowing() )
-                {
-                    if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                    {
-                        cellCalculation.addLocationListMarker(gmapController.addCellLocation(cell, radioCount.getColor(), 1, outlineColor));
-                    }
-                    else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                    {
-                        cellCalculation.addLocationListMarkerOsm(openStreetMapController.addColorToArea(cell.getMeasuredLocation().getLatitude(), cell.getMeasuredLocation().getLongitude(), 1, radioCount.getColor(), location.getOutlineColor()));
-                    }
-
-                }
-                if( centerPoint.isShowing() )
-                {
-                    if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                    {
-                        cellCalculation.addLocationCenterIconListMarker(gmapController.addLocationArrowMarker(new LatLng(cell.getMeasuredLocation().getLatitude(), cell.getMeasuredLocation().getLongitude()), R.drawable.arrow));
-                    }
-                    else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                    {
-                        cellCalculation.addLocationCenterIconListMarkerOsm(openStreetMapController.addLocationMarker(cell.getMeasuredLocation().getLatitude(), cell.getMeasuredLocation().getLongitude(), ResourcesCompat.getDrawable(openStreetMapController.getContext().getResources(), R.drawable.arrow, null)));
-                    }
-
-                }
-
-                if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                {
-                    polylineOptions.add(new LatLng(cell.getMeasuredLocation().getLatitude(), cell.getMeasuredLocation().getLongitude()));
-                }
-                else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                {
-                    polyline.addPoint(new GeoPoint(cell.getMeasuredLocation().getLatitude(), cell.getMeasuredLocation().getLongitude()));
-                }
-
-            }
-            if( lineRoute.isShowing() )
-            {
-                if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                {
-                    cellCalculation.setLocationPolyline(gmapController.addPolyLine(polylineOptions, lineRoute.getColor()));
-                }
-                else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                {
-                    polyline.getOutlinePaint().setColor(lineRoute.getColor());
-                    cellCalculation.setLocationPolylineOsm(openStreetMapController.addPolyline(polyline));
-                }
-            }
-        }
-        else if( cellCalculation.getCurrentScannedType() == Global.SCANNED_TYPE_WIFI )
-        {
-            for( Wifi wifi : cellCalculation.getWifiList() )
-            {
-                if( gpsAcc.isShowing() )
-                {
-                    if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                    {
-                        cellCalculation.addLocationListMarker(gmapController.
-                                addWifiLocation(wifi, gpsAcc.getColor(), wifi.getMeasuredLocation().getAccuracy(), outlineColor));
-                    }
-                    else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                    {
-                        cellCalculation.addLocationListMarkerOsm(openStreetMapController.
-                                addColorToArea(wifi.getMeasuredLocation().getLatitude(), wifi.getMeasuredLocation().getLongitude(), wifi.getMeasuredLocation().getAccuracy(), gpsAcc.getColor(), location.getOutlineColor()));
-                    }
-
-                }
-                if( radioCount.isShowing() )
-                {
-                    if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                    {
-                        cellCalculation.addLocationListMarker(gmapController.addWifiLocation(wifi, radioCount.getColor(), 1, outlineColor));
-                    }
-                    else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                    {
-                        cellCalculation.addLocationListMarkerOsm(openStreetMapController.addColorToArea(wifi.getMeasuredLocation().getLatitude(), wifi.getMeasuredLocation().getLongitude(), 1, radioCount.getColor(), location.getOutlineColor()));
-                    }
-
-                }
-                if( centerPoint.isShowing() )
-                {
-                    if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                    {
-
-                        cellCalculation.addLocationCenterIconListMarker(gmapController.addLocationArrowMarker(new LatLng(wifi.getMeasuredLocation().getLatitude(), wifi.getMeasuredLocation().getLongitude()), R.drawable.arrow));
-
-                    }
-                    else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                    {
-                        cellCalculation.addLocationCenterIconListMarkerOsm(openStreetMapController.addLocationMarker(wifi.getMeasuredLocation().getLatitude(), wifi.getMeasuredLocation().getLongitude(), ResourcesCompat.getDrawable(openStreetMapController.getContext().getResources(), R.drawable.arrow, null)));
-                    }
-
-                }
-
-                if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                {
-                    polylineOptions.add(new LatLng(wifi.getMeasuredLocation().getLatitude(), wifi.getMeasuredLocation().getLongitude()));
-                }
-                else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                {
-                    polyline.addPoint(new GeoPoint(wifi.getMeasuredLocation().getLatitude(), wifi.getMeasuredLocation().getLongitude()));
-                }
-            }
-            if( lineRoute.isShowing() )
-            {
-                if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
-                {
-                    cellCalculation.setLocationPolyline(gmapController.addPolyLine(polylineOptions, lineRoute.getColor()));
-                }
-                else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
-                {
-                    polyline.getOutlinePaint().setColor(lineRoute.getColor());
-                    cellCalculation.setLocationPolylineOsm(openStreetMapController.addPolyline(polyline));
-                }
-            }
-        }
-    }
-    // End of Location Drawing section
-
     // Start Removing section
     public void clearMap()
     {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if(MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.clear();
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.clear();
             openStreetMapController.clearClusterItem();
@@ -606,14 +449,14 @@ public class MapController
 
     public void removeLocationBasedOnSelectedProfile( CellCalculation cellCalculation )
     {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             cellCalculation.removeLocationCenterIconListMarkers();
             cellCalculation.removeLocationListMarkers();
             cellCalculation.removeLocationPolyline();
 
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             removeLocationCenterIconListMarkersOsm(cellCalculation);
             removeLocationListMarkersOsm(cellCalculation);
@@ -683,11 +526,11 @@ public class MapController
     // Removing radio data
     public void removeCellListMarker( CellCalculation cellCalculation )
     {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             cellCalculation.removeCellListMarkers();
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             removeCellListMarkersOsm(cellCalculation);
         }
@@ -695,11 +538,11 @@ public class MapController
 
     public void removeCenterPolygon( CellCalculation cellCalculation )
     {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             cellCalculation.removeCenterPolygon();
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.removeFromOsmMap(cellCalculation.getCenterPolygonOsm());
         }
@@ -707,11 +550,11 @@ public class MapController
 
     public void removeConvexHull( CellCalculation cellCalculation )
     {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             cellCalculation.removeConvexHull();
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.removeFromOsmMap(cellCalculation.getConvexHullOsm());
         }
@@ -730,12 +573,10 @@ public class MapController
     }
     // End of Removing section
 
-    */
-/**
+    /**
      * used to init redraw location when using autocomplete
      * can redraw location with condition pinLocationProvider == null
-     *//*
-
+     */
     private void redrawAutoCompleteLocations()
     {
         if( null != mainActivity.getGooglePlacesController() && !isLongPress )
@@ -776,11 +617,11 @@ public class MapController
         for( Location loc : locationList )
         {
             locSize++;
-            if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
             {
                 gmapController.addColorToAreaWithZoom(loc.getLatitude(), loc.getLongitude());
             }
-            else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
             {
                 openStreetMapController.addCircleWithZoom(loc.getLatitude(), loc.getLongitude(), loc.getAccuracy());
                 if( locSize == locationList.size() )
@@ -792,7 +633,7 @@ public class MapController
 
         if( pinLocationProvider != null && pinLocationProvider.getPinLocation() != null && isLongPress )
         {
-            if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
             {
                 LatLng lastTakeGmap = new LatLng(pinLocationProvider.getPinLocation().getLatitude(), pinLocationProvider.getPinLocation().getLongitude());
                 gmapController.addLocationPinPointMarker(lastTakeGmap);
@@ -813,11 +654,11 @@ public class MapController
     public void zoomToArea( double latitude, double longitude )
     {
         int zoomLevel = 13;
-        if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.zoomToArea(latitude, longitude, zoomLevel);
         }
-        else if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.setOSMZoomLevel(latitude, longitude, zoomLevel);
         }
@@ -826,7 +667,7 @@ public class MapController
 
     public void getMyLocation( Location location )
     {
-        if( mapSingleton.getSelectedMap() == Global.GOOGLEMAP )
+        if( mapSingleton.getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.getMyCurrentLocation(location);
         }
@@ -859,9 +700,9 @@ public class MapController
             zoomLevelOSM = getLastZoomLevel() + 3;
             lastZoomLevel = (int) googleMap.getCameraPosition().zoom - 2;
 
-            if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
                 lastZoomLevel = zoomLevelOSM;
-            else if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
                 lastZoomLevel = zoomLevelGoogle;
             setLastZoomLevel(getLastZoomLevel());
 
@@ -913,9 +754,9 @@ public class MapController
                     setLastZoomLevel(zoomLevelOSM - 3);
                 }
             }
-            if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP )
+            if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
                 lastZoomLevel = zoomLevelOSM;
-            else if( MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP )
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
                 lastZoomLevel = zoomLevelGoogle;
             setLastZoomLevel(getLastZoomLevel());
             return false;
@@ -958,7 +799,7 @@ public class MapController
     {
         List<Address> addresses;
         Geocoder geocoder = new Geocoder(mainActivity, Locale.getDefault());
-        boolean chooseGoogleMap = MapSingleton.getInstance().getSelectedMap() == Global.GOOGLEMAP;
+        boolean chooseGoogleMap = MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP;
 
         try
         {
@@ -1111,14 +952,12 @@ public class MapController
         }
     }
 
-    */
-/**
+    /**
      * Is Mock Location Enable or not
      * Support API 23
      *
      * @return isMockLocation {@true} mock location has active {@false} otherwise
-     *//*
-
+     */
     public boolean isMockLocation()
     {
         boolean isMockLocation = false;
@@ -1144,7 +983,7 @@ public class MapController
 
     private void resetLocationMarker()
     {
-        if( mapSingleton.getSelectedMap() != Global.GOOGLEMAP )
+        if( mapSingleton.getSelectedMap() != Config.GOOGLEMAP )
         {
             openStreetMapController.resetLocationMarker();
         }
@@ -1186,4 +1025,3 @@ public class MapController
     }
 
 }
-*/

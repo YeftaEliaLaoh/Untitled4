@@ -10,12 +10,6 @@ import android.location.Location;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 
-import com.firstwap.celltrax.BuildConfig;
-import com.firstwap.celltrax.R;
-import com.firstwap.celltrax.activities.MainActivity;
-import com.firstwap.celltrax.models.ClusteredCenterMarker;
-import com.firstwap.celltrax.models.MapSingleton;
-import com.firstwap.celltrax.utils.Global;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 

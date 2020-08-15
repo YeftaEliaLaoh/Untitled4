@@ -8,14 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.support.v4.content.ContextCompat;
 
-import com.firstwap.celltrax.R;
-import com.firstwap.celltrax.activities.MainActivity;
-import com.firstwap.celltrax.models.Cell;
-import com.firstwap.celltrax.models.ClusteredCenterMarker;
-import com.firstwap.celltrax.models.ProfileSettingSingleton;
-import com.firstwap.celltrax.models.Wifi;
-import com.firstwap.celltrax.ui.CenterMarkerRenderer1;
-import com.firstwap.celltrax.ui.CenterMarkerRenderer2;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
