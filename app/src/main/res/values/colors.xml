@@ -12,5 +12,6 @@
     <color name="blue_component_clicked">#527eac</color>
     <color name="white">#ffffff</color>
     <color name="colorRedClicked">#b8353a</color>
-
+    <color name="dark_blue">#00008B</color>
+    <color name="transparent_blue_dark">#9900008b</color>
 </resources>

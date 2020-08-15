@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_blue_dark">
+
+    <TextView
+        android:id="@+id/base"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="10dp"
+        android:text="Base Layer"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/map_min_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/zxing_transparent"
+        android:contentDescription="map_min_spinner"
+        android:paddingTop="2dp"
+        android:src="@drawable/layer_switcher_minimize" />
+
+    <RadioGroup
+        android:id="@+id/radioSwitcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/base"
+        android:paddingStart="23dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="23dp"
+        android:paddingBottom="5dp">
+
+        <RadioButton
+            android:id="@+id/googlemap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:singleLine="false"
+            android:text="Google Map"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/osm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:singleLine="false"
+            android:text="Open Street Map  "
+            android:textColor="@color/white" />
+    </RadioGroup>
+
+</RelativeLayout>
