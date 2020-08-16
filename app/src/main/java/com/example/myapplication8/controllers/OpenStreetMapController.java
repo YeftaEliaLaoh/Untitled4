@@ -1,15 +1,17 @@
-/*
 package com.example.myapplication8.controllers;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 
+import androidx.core.content.res.ResourcesCompat;
+
+import com.example.myapplication8.BuildConfig;
+import com.example.myapplication8.R;
+import com.example.myapplication8.models.ClusteredCenterMarker;
+import com.example.myapplication8.models.MapSingleton;
+import com.example.myapplication8.utilities.Config;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -34,45 +36,28 @@ public class OpenStreetMapController
     private MapView mapView;
     private Context context;
     //declare osm claster object
-    private OsmClusterController osmClusterMarkers;
     private List<Marker> markerOsm;
     private Marker currentLocationMarker;
     private Marker locationMarker;
-    private MainActivity mainActivity;
 
-    public OpenStreetMapController( MapView mapView, MainActivity mainActivity )
+    public OpenStreetMapController(MapView mapView, Context context)
     {
         this.mapView = mapView;
-        this.context = mapView.getContext();
-        this.osmClusterMarkers = new OsmClusterController(context);
         markerOsm = new ArrayList<>();
-        //tap to zoom
         mapView.setMultiTouchControls(true);
-        this.mainActivity = mainActivity;
+        this.context = context;
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-    }
-
-    public Context getContext()
-    {
-        return mapView.getContext();
     }
 
     public void showDetailsOsmMap()
     {
         mapView.setMinZoomLevel((double) 3);
         mapView.setMaxZoomLevel((double) 22);
-        MapSingleton.getInstance().setSelectedMap(Global.OPENSTREETMAP);
+        MapSingleton.getInstance().setSelectedMap(Config.OPENSTREETMAP);
         mapView.setVisibility(View.VISIBLE);
-        IMapController mapController = mapView.getController();
-        mapController.setZoom(mainActivity.getMapWrapper().zoomLevelOSM);
-        mainActivity.getMapWrapper().redrawLocations();
-        if( mainActivity.getMapToolsController() != null && mainActivity.getMapToolsController().isViewingSession() )
-        {
-            mainActivity.redrawMapComponents();
-        }
     }
 
-    public Polygon addCircleWithZoom( double latitude, double longitude, double accuracy )
+    public Polygon addCircleWithZoom(double latitude, double longitude, double accuracy)
     {
         Polygon polygon = new Polygon();
         GeoPoint latlng = new GeoPoint(latitude, longitude);
@@ -86,13 +71,11 @@ public class OpenStreetMapController
         polygon.getOutlinePaint().setStrokeWidth(1);
 
         final double newZoomLevel = mapView.getZoomLevelDouble();
-        if( MainActivity.isScanning && MainActivity.firstTimeScanning )
+        /*if( MainActivity.isScanning && MainActivity.firstTimeScanning )
         {
             mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
             mapView.setMaxZoomLevel((double) 18);
             mapView.zoomToBoundingBox(boundingbox, true);
-            MainActivity.firstTimeScanning = false;
-
         }
         else if( MainActivity.isScanning )
         {
@@ -101,7 +84,7 @@ public class OpenStreetMapController
             mapView.setMaxZoomLevel(newZoomLevel);
             mapView.zoomToBoundingBox(boundingbox, true);
 
-        }
+        }*/
         mapView.getOverlays().add(polygon);
         mapView.invalidate();
         mapView.setMinZoomLevel((double) 3);
@@ -116,26 +99,26 @@ public class OpenStreetMapController
         return mapView;
     }
 
-    public void drawOnOsmMap( Overlay overlayObject )
+    public void drawOnOsmMap(Overlay overlayObject)
     {
         mapView.getOverlays().add(overlayObject);
         mapView.invalidate();
     }
 
-    private void drawOnTopOsmMap( Overlay overlayObject )
+    private void drawOnTopOsmMap(Overlay overlayObject)
     {
         mapView.getOverlays().add(0, overlayObject);
         mapView.invalidate();
     }
 
 
-    public void removeFromOsmMap( Overlay overlay )
+    public void removeFromOsmMap(Overlay overlay)
     {
         mapView.getOverlays().remove(overlay);
         mapView.invalidate();
     }
 
-    public Polygon addColorToArea( double latitude, double longitude, double accuracy, int color, int outlineColor )
+    public Polygon addColorToArea(double latitude, double longitude, double accuracy, int color, int outlineColor)
     {
         Polygon polygon = new Polygon();
         GeoPoint geoPoint = new GeoPoint(latitude, longitude);
@@ -148,7 +131,7 @@ public class OpenStreetMapController
         return polygon;
     }
 
-    public void animateCameraToBound( LatLngBounds bound )
+    public void animateCameraToBound(LatLngBounds bound)
     {
         LatLng northEast = bound.northeast;
         LatLng southWest = bound.southwest;
@@ -158,7 +141,7 @@ public class OpenStreetMapController
         mapView.zoomToBoundingBox(boundingbox, true);
     }
 
-    public Polyline addPolyline( Polyline polyline )
+    public Polyline addPolyline(Polyline polyline)
     {
         drawOnOsmMap(polyline);
         return polyline;
@@ -166,7 +149,7 @@ public class OpenStreetMapController
 
     public void clear()
     {
-        if( null == mapView )
+        if (null == mapView)
         {
             return;
         }
@@ -174,9 +157,9 @@ public class OpenStreetMapController
         mapView.invalidate();
     }
 
-    public void setOSMZoomLevel( final double latitude, final double longitude, final double level )
+    public void setOSMZoomLevel(final double latitude, final double longitude, final double level)
     {
-        if( null == mapView )
+        if (null == mapView)
         {
             return;
         }
@@ -191,7 +174,7 @@ public class OpenStreetMapController
     }
 
     //adding marker wifi and cell
-    public Marker addItemMarker( ClusteredCenterMarker cluster )
+    public Marker addItemMarker(ClusteredCenterMarker cluster)
     {
         Marker marker = new Marker(mapView);
         GeoPoint point = new GeoPoint(cluster.getLatitude(), cluster.getLongitude());
@@ -200,14 +183,8 @@ public class OpenStreetMapController
         marker.setTitle(cluster.getName());
 
         Drawable icon;
-        if( cluster.getType() == Global.SCANNED_TYPE_CELL )
-        {
-            icon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.bts_scan, null);
-        }
-        else
-        {
-            icon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.wifi_scan, null);
-        }
+
+        icon = ResourcesCompat.getDrawable(context.getResources(), R.drawable.bts_scan, null);
 
         marker.setSnippet(Integer.toString(cluster.getType()));
         marker.setIcon(icon);
@@ -220,41 +197,33 @@ public class OpenStreetMapController
     public void clearClusterItem()
     {
         markerOsm.clear();
-        osmClusterMarkers.getItems().clear();
-        mapView.getOverlays().remove(osmClusterMarkers);
         mapView.invalidate();
     }
 
     //setting cluster max zoom
     public void zoomClusterMarker()
     {
-        if( markerOsm.size() != 0 )
+        if (markerOsm.size() != 0)
         {
             mapView.setMaxZoomLevel((double) 19);
         }
     }
 
     //add location marker for OSM
-    public Marker addLocationMarker( double latitude, double longitude, Drawable icon )
+    public Marker addLocationMarker(double latitude, double longitude, Drawable icon)
     {
         locationMarker = new Marker(mapView);
         locationMarker.setIcon(icon);
         locationMarker.setPosition(new GeoPoint(latitude, longitude));
         locationMarker.setAnchor(locationMarker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-        locationMarker.setOnMarkerClickListener(mainActivity.getGooglePlacesController());
+        //locationMarker.setOnMarkerClickListener(mainActivity.getGooglePlacesController());
         drawOnOsmMap(locationMarker);
 
         return locationMarker;
     }
 
-    public void addLocationPinPointMarker( GeoPoint geoPoint )
-    {
-        resetLocationMarker();
-        addLocationMarker(geoPoint.getLatitude(), geoPoint.getLongitude(), ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.arrow, null));
-    }
-
     //adding object to list
-    public void addListClusterMarker( Marker marker )
+    public void addListClusterMarker(Marker marker)
     {
         markerOsm.add(marker);
     }
@@ -265,48 +234,8 @@ public class OpenStreetMapController
         return markerOsm;
     }
 
-    public void clearClusterOsm()
-    {
-        if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP && osmClusterMarkers.getItems().size() != 0 )
-        {
-            osmClusterMarkers.getItems().clear();
-        }
-    }
 
-    //show cluster osm to map
-    public void showClusterOsm()
-    {
-        Drawable cid = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_marker_cluster, null);
-        Bitmap clusterIcon = ((BitmapDrawable) cid).getBitmap();
-        osmClusterMarkers.setIcon(clusterIcon);
-
-        for( final Marker m : markerOsm )
-        {
-            osmClusterMarkers.add(m);
-        }
-
-        drawOnOsmMap(osmClusterMarkers);
-    }
-
-    //remove cluster marker
-    public void removeClusterItem( Marker marker )
-    {
-        osmClusterMarkers.getItems().clear();
-        markerOsm.remove(marker);
-        drawOnOsmMap(osmClusterMarkers);
-    }
-
-    public void getMyCurrentLocation( Location location )
-    {
-        if( null != currentLocationMarker )
-        {
-            mapView.getOverlays().remove(currentLocationMarker);
-        }
-        currentLocationMarker = addLocationMarker(location.getLatitude(), location.getLongitude(), ResourcesCompat.getDrawable(context.getResources(), R.drawable.arrow, null));
-        setOSMZoomLevel(location.getLatitude(), location.getLongitude(), mapView.getZoomLevelDouble());
-    }
-
-    public void registerEventOsm( MapEventsReceiver receiver )
+    public void registerEventOsm(MapEventsReceiver receiver)
     {
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(receiver);
         mapView.getOverlays().add(mapEventsOverlay);
@@ -315,10 +244,9 @@ public class OpenStreetMapController
 
     public void resetLocationMarker()
     {
-        if( locationMarker != null )
+        if (locationMarker != null)
         {
             locationMarker.remove(mapView);
         }
     }
 }
-*/

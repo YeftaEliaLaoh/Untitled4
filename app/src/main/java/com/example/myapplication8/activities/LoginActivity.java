@@ -2,7 +2,6 @@ package com.example.myapplication8.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -11,12 +10,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.myapplication8.R;
 import com.example.myapplication8.utilities.Config;
@@ -24,12 +21,11 @@ import com.example.myapplication8.utilities.Config;
 public class LoginActivity extends AppCompatActivity
 {
 
-    private Switch demoModeSwitch;
+    private SwitchCompat demoModeSwitch;
     private EditText username;
     private EditText password;
     private Button loginBtn;
     private Button cancelBtn;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,7 +36,6 @@ public class LoginActivity extends AppCompatActivity
         initEvent();
         setFieldToDemoVersion(Config.IS_DEMO_VERSION, R.color.light_grey);
     }
-
 
     private void setFieldToDemoVersion(boolean isDemoChecked, int textColor)
     {
@@ -66,14 +61,13 @@ public class LoginActivity extends AppCompatActivity
     private void initLayout()
     {
 
-        demoModeSwitch = (Switch) findViewById(R.id.demo_mode_switch);
-        username = (EditText) findViewById(R.id.user_login);
-        password = (EditText) findViewById(R.id.password_login);
-        loginBtn = (Button) findViewById(R.id.login_btn);
-        cancelBtn = (Button) findViewById(R.id.cancel_btn);
+        demoModeSwitch = findViewById(R.id.demo_mode_switch);
+        username = findViewById(R.id.user_login);
+        password = findViewById(R.id.password_login);
+        loginBtn = findViewById(R.id.login_btn);
+        cancelBtn = findViewById(R.id.cancel_btn);
 
     }
-
 
     private void initEvent()
     {
@@ -149,7 +143,6 @@ public class LoginActivity extends AppCompatActivity
         button.setVisibility(visibility);
     }
 
-
     private void changesComponentDemoMode(boolean isChecked)
     {
 
@@ -162,7 +155,6 @@ public class LoginActivity extends AppCompatActivity
             setFieldToDemoVersion(false, R.color.white);
         }
     }
-
 
     @Override
     public void onResume()

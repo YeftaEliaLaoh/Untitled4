@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/login_layout_parent"
-        android:layout_width="wrap_content"
+    android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@color/colorPrimaryDark">
 
@@ -11,13 +10,11 @@
             android:layout_height="wrap_content">
 
         <RelativeLayout
-                android:id="@+id/login_layout_activity"
-                android:layout_width="match_parent"
+            android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
             <LinearLayout
-                    android:id="@+id/login_layout_content"
-                    android:layout_width="match_parent"
+                android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/side_padding"
                     android:layout_marginTop="@dimen/side_padding"
@@ -39,7 +36,8 @@
                         android:singleLine="true"
                         android:textColor="@color/layout_white"
                         android:textColorHint="@color/hint_color"
-                        android:theme="@style/loginThemeEditText" />
+                        android:theme="@style/loginThemeEditText"
+                    android:autofillHints="" />
 
                 <EditText
                         android:id="@+id/password_login"
@@ -56,14 +54,13 @@
                         android:theme="@style/loginThemeEditText" />
 
                 <RelativeLayout
-                        android:id="@+id/demo_mode_layout"
-                        android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/side_padding"
                         android:layout_marginBottom="@dimen/side_padding"
                         android:orientation="horizontal">
 
-                    <Switch
+                    <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/demo_mode_switch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -71,8 +68,7 @@
                             android:layout_alignParentLeft="true" />
 
                     <TextView
-                            android:id="@+id/demo_mode_switch_text"
-                            android:layout_width="wrap_content"
+                        android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_toEndOf="@+id/demo_mode_switch"

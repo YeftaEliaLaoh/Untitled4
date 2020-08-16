@@ -9,4 +9,7 @@ public class Config
     public static int GOOGLEMAP = 0;
     public static int OPENSTREETMAP = 1;
 
+    public static final int SCANNED_TYPE_CELL = 0;
+    public static final int SCANNED_TYPE_WIFI = 1;
+
 }

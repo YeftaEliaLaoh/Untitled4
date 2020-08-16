@@ -1,24 +1,27 @@
 package com.example.myapplication8.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.room.Room;
 
-import android.app.FragmentTransaction;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 
 import com.example.myapplication8.R;
+import com.example.myapplication8.controllers.LeftPaneController;
+import com.example.myapplication8.controllers.MapController;
+import com.example.myapplication8.databases.SessionDatabase;
+import com.example.myapplication8.fragment.SessionListFragment;
+import com.example.myapplication8.models.MapSingleton;
+import com.example.myapplication8.models.Session;
 import com.example.myapplication8.utilities.Config;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -26,18 +29,21 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
-    private ImageView toolsButtonShowOsm;
     private ImageView mapSpinner;
-    private RelativeLayout mapLayout;
     private GoogleMap googleMap;
-    private PopupWindow popup;
+    private PopupWindow popupWindow;
     private MapView mapView;
     private SupportMapFragment supportMapFragment;
     private int selectedMapType = 0;
-    private GestureDetector detector;
-
+    private MapController mapController;
+    private LeftPaneController leftPaneController;
+    public AsyncTask<Void, Session, ArrayList<Session>> sessionAsyncTask;
+    private SessionListFragment sessionListFragment;
+    private SessionDatabase sessionDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,32 +53,86 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initLayout();
         initData();
         initEvent();
-        //showGoogleMap();
+        populateSessions();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        if (sessionAsyncTask != null)
+        {
+            sessionAsyncTask.cancel(false);
+        }
+    }
+
+    private void populateSessions()
+    {
+        leftPaneController.getTextEmptyList().setVisibility(View.GONE);
+        sessionAsyncTask = new AsyncTask<Void, Session, ArrayList<Session>>()
+        {
+
+            @Override
+            protected ArrayList<Session> doInBackground(Void... params)
+            {
+                ArrayList<Session> sessionList = (ArrayList<Session>) sessionDatabase.sessionDao().getAll();
+                for (Session session : sessionList)
+                {
+                    publishProgress(session);
+                }
+
+                return sessionList;
+            }
+
+            @Override
+            protected void onProgressUpdate(Session... session)
+            {
+                sessionListFragment.addSession(session[0]);
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Session> result)
+            {
+                if (result.size() < 1)
+                {
+                    leftPaneController.getTextEmptyList().setVisibility(View.VISIBLE);
+                    leftPaneController.getTextEmptyList().setText(getString(R.string.label_no_session));
+                }
+            }
+        };
+        sessionAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void initLayout()
     {
-        mapLayout = findViewById(R.id.map_fragment);
+        leftPaneController = new LeftPaneController(this);
         mapSpinner = findViewById(R.id.map_spinner);
-        toolsButtonShowOsm = findViewById(R.id.button_tools_show_osm_map);
-        toolsButtonShowOsm.setVisibility(View.GONE);
-        mapSpinner.setVisibility(View.VISIBLE);
         mapView = findViewById(R.id.view_osm_map);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
     }
 
     private void initData()
     {
-//        supportMapFragment.setRetainInstance(true);
-//        supportMapFragment.getMapAsync(this);
-
+        mapSpinner.setVisibility(View.VISIBLE);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
+        supportMapFragment.setRetainInstance(true);
+        supportMapFragment.getMapAsync(this);
+
+        if ((sessionListFragment == null || !sessionListFragment.isAdded()) && getSupportFragmentManager().getBackStackEntryCount() == 0)
+        {
+            sessionListFragment = new SessionListFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.fragment_container, sessionListFragment).commit();
+        }
+        sessionDatabase = Room.databaseBuilder(getApplicationContext(),
+                                               SessionDatabase.class, "database-name"
+                                              ).allowMainThreadQueries().build();
     }
 
     private void initEvent()
     {
-
+        mapController = new MapController(mapView, this);
         mapSpinner.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -81,42 +141,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 displayPopupWindow(v);
             }
         });
-
-        detector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener()
-        {
-
-            @Override
-            public boolean onDown( MotionEvent e )
-            {
-                return true;
-            }
-
-            @Override
-            public boolean onDoubleTap( MotionEvent e )
-            {
-
-                return true;
-            }
-
-            @Override
-            public boolean onSingleTapConfirmed( MotionEvent e )
-            {
-                return true;
-            }
-        });
-
-
     }
 
     private void displayPopupWindow(View anchorView)
     {
         mapSpinner.setVisibility(View.INVISIBLE);
-        popup = new PopupWindow(this);
+        popupWindow = new PopupWindow(this);
         View layout = getLayoutInflater().inflate(R.layout.popup_menu_switcher, null);
         ImageView mapMinSpinner = layout.findViewById(R.id.map_min_spinner);
-        int mapLayoutWidth = mapLayout.getResources().getDisplayMetrics().widthPixels / 2;
-
-        popup.setContentView(layout);
+        popupWindow.setContentView(layout);
 
         RadioGroup switcher = layout.findViewById(R.id.radioSwitcher);
 
@@ -146,13 +179,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 replaceTiles();
             }
         });
-        popup.setBackgroundDrawable(null);
-        popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-        popup.setWidth(mapLayoutWidth);
-        popup.setFocusable(true);
-        popup.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(null);
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
 
-        popup.setOnDismissListener(new PopupWindow.OnDismissListener()
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener()
         {
             @Override
             public void onDismiss()
@@ -166,12 +198,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v)
             {
-                popup.dismiss();
+                popupWindow.dismiss();
                 mapSpinner.setVisibility(View.VISIBLE);
             }
         });
 
-        popup.showAsDropDown(anchorView, -242, -32);
+        popupWindow.showAsDropDown(anchorView, -242, -32);
     }
 
     private void replaceTiles()
@@ -188,45 +220,46 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void showOsmMap()
     {
-        toolsButtonShowOsm.setVisibility(View.VISIBLE);
-        toolsButtonShowOsm.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                return detector.onTouchEvent(event);
-            }
-        });
-
-    }
-
-    private void showGoogleMap()
-    {
-
-        //MapSingleton.getInstance().setSelectedMap(Config.GOOGLEMAP);
-        supportMapFragment.getView().setVisibility(View.VISIBLE);
-        toolsButtonShowOsm.setVisibility(View.GONE);
-        /*if( googleMap != null )
-        {
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo((float) (mapWrapper.zoomLevelGoogle + 2)));
-            googleMap.moveCamera(CameraUpdateFactory.zoomTo((float) (mapWrapper.zoomLevelGoogle + 2)));
-        }
-        mapWrapper.redrawLocations();*/
-
+        hideGoogleMap();
+        mapController.getOpenStreetMapController().showDetailsOsmMap();
+        mapController.getOpenStreetMapController().registerEventOsm(mapController.getRegisterEventOsm());
     }
 
     private void hideGoogleMap()
     {
-        if( supportMapFragment != null )
+        if (supportMapFragment != null)
         {
             supportMapFragment.getView().setVisibility(View.GONE);
         }
     }
 
+    private void showGoogleMap()
+    {
+        hideOsmMap();
+        MapSingleton.getInstance().setSelectedMap(Config.GOOGLEMAP);
+        supportMapFragment.getView().setVisibility(View.VISIBLE);
+        if (googleMap != null)
+        {
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo((float) (mapController.zoomLevelGoogle + 2)));
+            googleMap.moveCamera(CameraUpdateFactory.zoomTo((float) (mapController.zoomLevelGoogle + 2)));
+        }
+    }
+
+    private void hideOsmMap()
+    {
+        if (mapView != null)
+        {
+            mapView.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
-
+        this.googleMap = googleMap;
+        mapView.setVisibility(View.GONE);
+        mapController.setGoogleMap(this, this.googleMap);
+        mapController.registerEventMapWrapper();
+        this.googleMap.getUiSettings().setZoomControlsEnabled(true);
     }
 }

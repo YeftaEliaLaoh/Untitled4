@@ -1,88 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/light_grey"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:padding="1dp">
 
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/view_osm_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <RelativeLayout
-        android:id="@+id/map_fragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="199dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp">
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <org.osmdroid.views.MapView
-            android:id="@+id/view_osm_map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
-        <RelativeLayout
-            android:id="@+id/button_switcher"
-            android:layout_width="199dp"
+        <ImageView
+            android:id="@+id/map_spinner"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:paddingStart="10dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="10dp">
+            android:background="@color/zxing_transparent"
+            android:contentDescription="map_max_spinner"
+            android:src="@drawable/zoom_in" />
 
-            <ImageView
-                android:id="@+id/map_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="@color/zxing_transparent"
-                android:contentDescription="map_max_spinner"
-                android:src="@drawable/zoom_in" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/button_resume_map_layout"
-            android:layout_width="130dp"
-            android:layout_height="40dp"
-            android:layout_above="@+id/button_current_location_layout"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            android:paddingBottom="5dp">
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/button_current_location_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:paddingBottom="30dp">
-
-            <ImageView
-                android:id="@+id/button_tools_show_osm_map"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="@color/dark_blue"
-                android:contentDescription="toolsButtonShowOsm"
-                android:padding="0dp"
-                android:src="@drawable/ic_activate_osm_map" />
-
-        </RelativeLayout>
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
+

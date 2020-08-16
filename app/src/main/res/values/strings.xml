@@ -5,5 +5,7 @@
     <string name="text_login_btn">Login</string>
     <string name="text_cancel_btn">Cancel</string>
     <string name="text_demo_mode">Demo Mode</string>
-
+    <string name="label_session_header_title">Session List</string>
+    <string name="back">back</string>
+    <string name="label_no_session">There is no session</string>
 </resources>
