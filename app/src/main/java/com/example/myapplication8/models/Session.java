@@ -14,22 +14,16 @@ public class Session implements Parcelable
 {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    @ColumnInfo(name = "status")
-    private int status;
     @ColumnInfo(name = "cellCount")
     private int cellCount;
     @ColumnInfo(name = "partFile")
     private String partFile;
-    @ColumnInfo(name = "startTime")
-    private long startTime;
-    @ColumnInfo(name = "stopTime")
-    private long stopTime;
     @ColumnInfo(name = "dateTime")
     private long dateTime;
     @ColumnInfo(name = "exportId")
     private long exportId;
 
-    private ArrayList<Cell> cellList;
+    //private ArrayList<Cell> cellList;
 
     public static final int IDLE = 0;
     public static final int SENT = 1;
@@ -37,12 +31,10 @@ public class Session implements Parcelable
 
     public Session()
     {
-        setStartTime(System.currentTimeMillis());
-
-        cellList = new ArrayList<>();
+        //cellList = new ArrayList<>();
     }
 
-    public Session(Parcel parcel)
+    public Session( Parcel parcel )
     {
         readFromParcel(parcel);
     }
@@ -52,42 +44,12 @@ public class Session implements Parcelable
         return id;
     }
 
-    public void setId(long id)
+    public void setId( int id )
     {
-        this.id = (int) id;
+        this.id = id;
     }
 
-    public int getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(int status)
-    {
-        this.status = status;
-    }
-
-    public long getStartTime()
-    {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime)
-    {
-        this.startTime = startTime;
-    }
-
-    public long getStopTime()
-    {
-        return stopTime;
-    }
-
-    public void setStopTime(long stopTime)
-    {
-        this.stopTime = stopTime;
-    }
-
-    public void setDateTime(long dateTime)
+    public void setDateTime( long dateTime )
     {
         this.dateTime = dateTime;
     }
@@ -103,12 +65,12 @@ public class Session implements Parcelable
         return exportId;
     }
 
-    public void setExportId(long exportId)
+    public void setExportId( long exportId )
     {
         this.exportId = exportId;
     }
 
-    public ArrayList<Cell> getCellList()
+/*    public ArrayList<Cell> getCellList()
     {
         return cellList;
     }
@@ -116,14 +78,14 @@ public class Session implements Parcelable
     public void setCellList(ArrayList<Cell> cellList)
     {
         this.cellList = cellList;
-    }
+    }*/
 
     public String getPartFile()
     {
         return partFile;
     }
 
-    public void setPartFile(String partFile)
+    public void setPartFile( String partFile )
     {
         this.partFile = partFile;
     }
@@ -136,22 +98,16 @@ public class Session implements Parcelable
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int flags)
+    public void writeToParcel( Parcel parcel, int flags )
     {
         parcel.writeInt(id);
-        parcel.writeInt(status);
-        parcel.writeLong(startTime);
-        parcel.writeLong(stopTime);
         parcel.writeLong(dateTime);
         parcel.writeInt(cellCount);
     }
 
-    protected void readFromParcel(Parcel parcel)
+    protected void readFromParcel( Parcel parcel )
     {
         id = parcel.readInt();
-        status = parcel.readInt();
-        startTime = parcel.readLong();
-        stopTime = parcel.readLong();
         dateTime = parcel.readLong();
         cellCount = parcel.readInt();
     }
@@ -161,7 +117,7 @@ public class Session implements Parcelable
         return cellCount;
     }
 
-    public void setCellCount(int cellCount)
+    public void setCellCount( int cellCount )
     {
         this.cellCount = cellCount;
     }
@@ -169,12 +125,12 @@ public class Session implements Parcelable
     public static final Creator<Session> CREATOR = new Creator<Session>()
     {
 
-        public Session createFromParcel(Parcel source)
+        public Session createFromParcel( Parcel source )
         {
             return new Session(source);
         }
 
-        public Session[] newArray(int size)
+        public Session[] newArray( int size )
         {
             return new Session[size];
         }

@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication8.R;
+import com.example.myapplication8.models.ItemSession;
+import com.example.myapplication8.models.ListviewAdapter;
+import com.example.myapplication8.models.ListviewItem;
 import com.example.myapplication8.models.Session;
 
 import java.util.ArrayList;
@@ -25,9 +28,8 @@ public class SessionListFragment extends Fragment
     public ListviewAdapter adapter;
     public View view;
     public ArrayList<ListviewItem> data = new ArrayList<>();
-    public CelltraxDB celltraxDB;
 
-    private LeftSessionController controller;
+    //private LeftSessionController controller;
 
     private ArrayList<Session> sessionList;
 
@@ -43,7 +45,7 @@ public class SessionListFragment extends Fragment
         // Inflate the layout for this fragment
         if( view == null )
         {
-            view = inflater.inflate(R.layout.layout_sesion_fragment, container, false);
+            //view = inflater.inflate(R.layout.layout_sesion_fragment, container, false);
             adapter = new ListviewAdapter(this.getActivity(), 0, data);
             sessionList = new ArrayList<>();
             init();
@@ -55,13 +57,8 @@ public class SessionListFragment extends Fragment
     // initialize the left session controller object and register for events inside left session
     private void init()
     {
-        controller = new LeftSessionController(this);
-        controller.registerEvent();
-    }
-
-    public LeftSessionController getLeftSessionController()
-    {
-        return this.controller;
+        //controller = new LeftSessionController(this);
+        //controller.registerEvent();
     }
 
     @Override
@@ -74,8 +71,6 @@ public class SessionListFragment extends Fragment
     public void onCreate( Bundle savedInstanceState )
     {
         super.onCreate(savedInstanceState);
-        celltraxDB = new CelltraxDB(getActivity());
-        celltraxDB.open(Global.MAIN_CONFIG);
     }
 
     public void addSession( Session session )
@@ -92,13 +87,6 @@ public class SessionListFragment extends Fragment
         ItemSession item = new ItemSession(session);
         int firstIndex = 0;
 
-        if( controller.isScanning() )
-        {
-            firstIndex += 1;
-        }
-
-        controller.getMainActivity().hideEmptyText();
-
         sessionList.add(firstIndex, session);
         data.add(firstIndex, item);
         adapter.notifyDataSetChanged();
@@ -112,7 +100,6 @@ public class SessionListFragment extends Fragment
         if( indexFound > -1 )
         {
             sessionList.get(indexFound).setCellCount(session.getCellCount());
-            sessionList.get(indexFound).setWifiCount(session.getWifiCount());
             adapter.notifyDataSetChanged();
 
             return true;
@@ -165,8 +152,6 @@ public class SessionListFragment extends Fragment
         {
             ItemSession item = (ItemSession) data.get(0);
             Session session = sessionList.get(0);
-            session.setStopTime(stopTime);
-            item.updateStopTime(stopTime);
         }
 
     }
