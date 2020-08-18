@@ -22,27 +22,27 @@ public class CenterMarkerRenderer extends DefaultClusterRenderer<ClusteredCenter
 
     private final float density = 4.0f;
 
-    public CenterMarkerRenderer(Context context, GoogleMap googleMap, ClusterManager<ClusteredCenterMarker> clusterManager)
+    public CenterMarkerRenderer( Context context, GoogleMap googleMap, ClusterManager<ClusteredCenterMarker> clusterManager )
     {
         super(context, googleMap, clusterManager);
         this.context = context;
     }
 
     @Override
-    protected void onBeforeClusterItemRendered(ClusteredCenterMarker clusteredCenterMarker, MarkerOptions markerOptions)
+    protected void onBeforeClusterItemRendered( ClusteredCenterMarker clusteredCenterMarker, MarkerOptions markerOptions )
     {
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.bts_scan);
         markerOptions.icon(bitmapDescriptor).title(clusteredCenterMarker.getName());
     }
 
     @Override
-    protected void onClusterItemRendered(ClusteredCenterMarker clusteredCenterMarker, Marker marker)
+    protected void onClusterItemRendered( ClusteredCenterMarker clusteredCenterMarker, Marker marker )
     {
         super.onClusterItemRendered(clusteredCenterMarker, marker);
     }
 
     @Override
-    protected void onBeforeClusterRendered(Cluster<ClusteredCenterMarker> cluster, MarkerOptions markerOptions)
+    protected void onBeforeClusterRendered( Cluster<ClusteredCenterMarker> cluster, MarkerOptions markerOptions )
     {
         final IconGenerator iconGenerator = new IconGenerator(context);
         iconGenerator.setContentView(this.makeSquareTextView(context));
@@ -52,12 +52,12 @@ public class CenterMarkerRenderer extends DefaultClusterRenderer<ClusteredCenter
     }
 
     @Override
-    protected boolean shouldRenderAsCluster(Cluster cluster)
+    protected boolean shouldRenderAsCluster( Cluster cluster )
     {
         return cluster.getSize() > 1;
     }
 
-    private SquareTextView makeSquareTextView(Context context)
+    private SquareTextView makeSquareTextView( Context context )
     {
         int twelveDpi = (int) (12.0F * this.density);
         SquareTextView squareTextView = new SquareTextView(context);

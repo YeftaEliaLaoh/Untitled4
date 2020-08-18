@@ -40,7 +40,7 @@ public class OpenStreetMapController
     private Marker currentLocationMarker;
     private Marker locationMarker;
 
-    public OpenStreetMapController(MapView mapView, Context context)
+    public OpenStreetMapController( MapView mapView, Context context )
     {
         this.mapView = mapView;
         markerOsm = new ArrayList<>();
@@ -57,7 +57,7 @@ public class OpenStreetMapController
         mapView.setVisibility(View.VISIBLE);
     }
 
-    public Polygon addCircleWithZoom(double latitude, double longitude, double accuracy)
+    public Polygon addCircleWithZoom( double latitude, double longitude, double accuracy )
     {
         Polygon polygon = new Polygon();
         GeoPoint latlng = new GeoPoint(latitude, longitude);
@@ -99,26 +99,26 @@ public class OpenStreetMapController
         return mapView;
     }
 
-    public void drawOnOsmMap(Overlay overlayObject)
+    public void drawOnOsmMap( Overlay overlayObject )
     {
         mapView.getOverlays().add(overlayObject);
         mapView.invalidate();
     }
 
-    private void drawOnTopOsmMap(Overlay overlayObject)
+    private void drawOnTopOsmMap( Overlay overlayObject )
     {
         mapView.getOverlays().add(0, overlayObject);
         mapView.invalidate();
     }
 
 
-    public void removeFromOsmMap(Overlay overlay)
+    public void removeFromOsmMap( Overlay overlay )
     {
         mapView.getOverlays().remove(overlay);
         mapView.invalidate();
     }
 
-    public Polygon addColorToArea(double latitude, double longitude, double accuracy, int color, int outlineColor)
+    public Polygon addColorToArea( double latitude, double longitude, double accuracy, int color, int outlineColor )
     {
         Polygon polygon = new Polygon();
         GeoPoint geoPoint = new GeoPoint(latitude, longitude);
@@ -131,7 +131,7 @@ public class OpenStreetMapController
         return polygon;
     }
 
-    public void animateCameraToBound(LatLngBounds bound)
+    public void animateCameraToBound( LatLngBounds bound )
     {
         LatLng northEast = bound.northeast;
         LatLng southWest = bound.southwest;
@@ -141,7 +141,7 @@ public class OpenStreetMapController
         mapView.zoomToBoundingBox(boundingbox, true);
     }
 
-    public Polyline addPolyline(Polyline polyline)
+    public Polyline addPolyline( Polyline polyline )
     {
         drawOnOsmMap(polyline);
         return polyline;
@@ -149,7 +149,7 @@ public class OpenStreetMapController
 
     public void clear()
     {
-        if (null == mapView)
+        if( null == mapView )
         {
             return;
         }
@@ -157,9 +157,9 @@ public class OpenStreetMapController
         mapView.invalidate();
     }
 
-    public void setOSMZoomLevel(final double latitude, final double longitude, final double level)
+    public void setOSMZoomLevel( final double latitude, final double longitude, final double level )
     {
-        if (null == mapView)
+        if( null == mapView )
         {
             return;
         }
@@ -174,7 +174,7 @@ public class OpenStreetMapController
     }
 
     //adding marker wifi and cell
-    public Marker addItemMarker(ClusteredCenterMarker cluster)
+    public Marker addItemMarker( ClusteredCenterMarker cluster )
     {
         Marker marker = new Marker(mapView);
         GeoPoint point = new GeoPoint(cluster.getLatitude(), cluster.getLongitude());
@@ -203,14 +203,14 @@ public class OpenStreetMapController
     //setting cluster max zoom
     public void zoomClusterMarker()
     {
-        if (markerOsm.size() != 0)
+        if( markerOsm.size() != 0 )
         {
             mapView.setMaxZoomLevel((double) 19);
         }
     }
 
     //add location marker for OSM
-    public Marker addLocationMarker(double latitude, double longitude, Drawable icon)
+    public Marker addLocationMarker( double latitude, double longitude, Drawable icon )
     {
         locationMarker = new Marker(mapView);
         locationMarker.setIcon(icon);
@@ -223,7 +223,7 @@ public class OpenStreetMapController
     }
 
     //adding object to list
-    public void addListClusterMarker(Marker marker)
+    public void addListClusterMarker( Marker marker )
     {
         markerOsm.add(marker);
     }
@@ -235,7 +235,7 @@ public class OpenStreetMapController
     }
 
 
-    public void registerEventOsm(MapEventsReceiver receiver)
+    public void registerEventOsm( MapEventsReceiver receiver )
     {
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(receiver);
         mapView.getOverlays().add(mapEventsOverlay);
@@ -244,7 +244,7 @@ public class OpenStreetMapController
 
     public void resetLocationMarker()
     {
-        if (locationMarker != null)
+        if( locationMarker != null )
         {
             locationMarker.remove(mapView);
         }

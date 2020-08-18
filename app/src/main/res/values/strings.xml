@@ -8,4 +8,31 @@
     <string name="label_session_header_title">Session List</string>
     <string name="back">back</string>
     <string name="label_no_session">There is no session</string>
+    <string name="btn_import">Import Data</string>
+    <string name="label_clear_log">Clear Log</string>
+    <string name="msg_title_mlistview">Session List</string>
+    <string name="warning_correct_session_list">Please select only session(s) that contains scanning result.</string>
+    <string name="warning_title_active_session_selection">Selection error</string>
+    <string name="warning_select_item">Please select at least one session</string>
+    <string name="msg_alert_delete">Are you sure to delete selected session(s)?</string>
+    <string name="msg_yes">Yes</string>
+    <string name="msg_no">No</string>
+    <string name="button_ok">OK</string>
+    <string name="label_please_wait">Please wait:</string>
+    <string name="label_header_importing">Importing Session(s)</string>
+    <string name="label_header_exporting">Exporting Session(s)</string>
+    <string name="label_importing">Importing</string>
+    <string name="label_exporting">Exporting</string>
+    <string name="label_scan_result_title">Scan Result</string>
+    <string name="title_clear">Clear Log</string>
+    <string name="unsupported_file_format">Unsupported file format.</string>
+    <string name="unsupported_json_format">Unsupported JSON format.</string>
+    <string name="warning_title_json_permission">Session Import Permission</string>
+    <string name="warning_json_permission">Session Import is not allowed when CellTrax is scanning.</string>
+    <string name="warning_title_import">Import Session</string>
+    <string name="warning_import_success">File has been imported successfully.</string>
+    <string name="warning_import_skipped">Some of the sessions has been imported previously, therefore is skipped.</string>
+    <string name="warning_import_checksum_invalid">File checksum failed to verify.</string>
+    <string name="warning_import_unknown">There are something error occurred, Please to try again.</string>
+
 </resources>

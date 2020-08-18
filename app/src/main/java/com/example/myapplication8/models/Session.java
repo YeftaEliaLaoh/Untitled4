@@ -23,8 +23,6 @@ public class Session implements Parcelable
     @ColumnInfo(name = "exportId")
     private long exportId;
 
-    //private ArrayList<Cell> cellList;
-
     public static final int IDLE = 0;
     public static final int SENT = 1;
     public static final int EXPORTED = 2;

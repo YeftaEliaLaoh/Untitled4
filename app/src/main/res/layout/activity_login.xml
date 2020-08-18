@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@color/colorPrimaryDark">
 
@@ -10,11 +10,11 @@
             android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:layout_width="match_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/side_padding"
                     android:layout_marginTop="@dimen/side_padding"
@@ -37,7 +37,7 @@
                         android:textColor="@color/layout_white"
                         android:textColorHint="@color/hint_color"
                         android:theme="@style/loginThemeEditText"
-                    android:autofillHints="" />
+                        android:autofillHints="" />
 
                 <EditText
                         android:id="@+id/password_login"
@@ -54,7 +54,7 @@
                         android:theme="@style/loginThemeEditText" />
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/side_padding"
                         android:layout_marginBottom="@dimen/side_padding"
@@ -68,7 +68,7 @@
                             android:layout_alignParentLeft="true" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_toEndOf="@+id/demo_mode_switch"
@@ -79,13 +79,13 @@
                 </RelativeLayout>
 
                 <Button
-                    android:id="@+id/login_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/side_padding"
-                    android:background="@drawable/clicked_state_button"
-                    android:text="@string/text_login_btn"
-                    android:textColor="@color/layout_white" />
+                        android:id="@+id/login_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/side_padding"
+                        android:background="@drawable/clicked_state_button"
+                        android:text="@string/text_login_btn"
+                        android:textColor="@color/layout_white" />
 
                 <Button
                         android:id="@+id/cancel_btn"

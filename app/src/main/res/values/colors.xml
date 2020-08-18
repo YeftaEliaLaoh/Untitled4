@@ -15,5 +15,7 @@
     <color name="black">#000000</color>
     <color name="header_blue">#2d557e</color>
     <color name="wallet_holo_blue_light">#33b5e5</color>
+    <color name="material_blue_grey">#ff263238</color>
+    <color name="color_disabled">#9a9a9a</color>
 </resources>
 

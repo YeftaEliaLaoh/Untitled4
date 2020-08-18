@@ -35,7 +35,7 @@ public class GoogleMapController
     {
     }
 
-    public void setGoogleMap(Context context, final GoogleMap googleMap)
+    public void setGoogleMap( Context context, final GoogleMap googleMap )
     {
         this.googleMap = googleMap;
         this.context = context;
@@ -47,9 +47,9 @@ public class GoogleMapController
 
     }
 
-    public void addColorToAreaWithZoom(double latitude, double longitude)
+    public void addColorToAreaWithZoom( double latitude, double longitude )
     {
-        if (null == googleMap)
+        if( null == googleMap )
         {
             return;
         }
@@ -63,9 +63,9 @@ public class GoogleMapController
 
     }
 
-    public Circle addColorToAreaWithType(double latitude, double longitude, double accuracy, int color, int outliner)
+    public Circle addColorToAreaWithType( double latitude, double longitude, double accuracy, int color, int outliner )
     {
-        if (null == googleMap)
+        if( null == googleMap )
         {
             return null;
         }
@@ -77,9 +77,9 @@ public class GoogleMapController
 
     }
 
-    public void zoomToArea(double latitude, double longitude, int zoomLevel)
+    public void zoomToArea( double latitude, double longitude, int zoomLevel )
     {
-        if (null == googleMap)
+        if( null == googleMap )
         {
             return;
         }
@@ -88,18 +88,18 @@ public class GoogleMapController
         googleMap.moveCamera(yourLocation);
     }
 
-    public Polygon drawPolygonOnMap(PolygonOptions polygonOptions)
+    public Polygon drawPolygonOnMap( PolygonOptions polygonOptions )
     {
-        if (null == googleMap)
+        if( null == googleMap )
         {
             return null;
         }
         return googleMap.addPolygon(polygonOptions);
     }
 
-    public Polyline addPolyLine(PolylineOptions polylineOptions, int color)
+    public Polyline addPolyLine( PolylineOptions polylineOptions, int color )
     {
-        if (null == googleMap)
+        if( null == googleMap )
         {
             return null;
         }
@@ -109,9 +109,9 @@ public class GoogleMapController
 
     }
 
-    public void animateCameraPosition(LatLngBounds bounds)
+    public void animateCameraPosition( LatLngBounds bounds )
     {
-        if (null == googleMap)
+        if( null == googleMap )
         {
             return;
         }
@@ -120,7 +120,7 @@ public class GoogleMapController
 
     public void clear()
     {
-        if (null == googleMap)
+        if( null == googleMap )
         {
             return;
         }
@@ -131,7 +131,7 @@ public class GoogleMapController
     // Move to point 0,0 and zoom out to the minimum level
     public void showWorldMap()
     {
-        if (googleMap != null)
+        if( googleMap != null )
         {
             googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(new LatLng(0, 0), googleMap.getMinZoomLevel())));
         }
@@ -147,22 +147,22 @@ public class GoogleMapController
         return clusterManager;
     }
 
-    public void addClusterItem(ClusteredCenterMarker clusteredCenterMarker)
+    public void addClusterItem( ClusteredCenterMarker clusteredCenterMarker )
     {
-        if (null == clusterManager)
+        if( null == clusterManager )
         {
             return;
         }
-        if (clusteredCenterMarker != null)
+        if( clusteredCenterMarker != null )
         {
             clusterManager.addItem(clusteredCenterMarker);
             clusterManager.cluster();
         }
     }
 
-    public void removeClusterItem(ClusteredCenterMarker marker)
+    public void removeClusterItem( ClusteredCenterMarker marker )
     {
-        if (null == clusterManager)
+        if( null == clusterManager )
         {
             return;
         }
@@ -171,10 +171,9 @@ public class GoogleMapController
     }
 
 
-
     public void clearAllCluster()
     {
-        if (null == clusterManager)
+        if( null == clusterManager )
         {
             return;
         }
@@ -182,11 +181,11 @@ public class GoogleMapController
         clusterManager.cluster();
     }
 
-    public void getMyCurrentLocation(Location location)
+    public void getMyCurrentLocation( Location location )
     {
 
         LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-        if (null != currentLocationMarker)
+        if( null != currentLocationMarker )
         {
             currentLocationMarker.remove();
         }
@@ -195,7 +194,7 @@ public class GoogleMapController
 
     }
 
-    public void registerEventGmap(GoogleMap.OnMapLongClickListener registerEvent)
+    public void registerEventGmap( GoogleMap.OnMapLongClickListener registerEvent )
     {
         googleMap.setOnMapLongClickListener(registerEvent);
     }

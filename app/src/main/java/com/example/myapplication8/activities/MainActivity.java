@@ -15,7 +15,7 @@ import android.widget.RadioGroup;
 import com.example.myapplication8.R;
 import com.example.myapplication8.controllers.LeftPaneController;
 import com.example.myapplication8.controllers.MapController;
-import com.example.myapplication8.databases.SessionDatabase;
+import com.example.myapplication8.databases.AppDatabase;
 import com.example.myapplication8.fragment.SessionListFragment;
 import com.example.myapplication8.models.MapSingleton;
 import com.example.myapplication8.models.Session;
@@ -43,10 +43,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LeftPaneController leftPaneController;
     public AsyncTask<Void, Session, ArrayList<Session>> sessionAsyncTask;
     private SessionListFragment sessionListFragment;
-    private SessionDatabase sessionDatabase;
+
+    public AppDatabase getAppDatabase()
+    {
+        return appDatabase;
+    }
+
+    public void setAppDatabase( AppDatabase appDatabase )
+    {
+        this.appDatabase = appDatabase;
+    }
+
+    private AppDatabase appDatabase;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -60,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onPause()
     {
         super.onPause();
-        if (sessionAsyncTask != null)
+        if( sessionAsyncTask != null )
         {
             sessionAsyncTask.cancel(false);
         }
@@ -73,10 +84,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
 
             @Override
-            protected ArrayList<Session> doInBackground(Void... params)
+            protected ArrayList<Session> doInBackground( Void... params )
             {
-                ArrayList<Session> sessionList = (ArrayList<Session>) sessionDatabase.sessionDao().getAll();
-                for (Session session : sessionList)
+                ArrayList<Session> sessionList = (ArrayList<Session>) appDatabase.sessionDao().getAll();
+                for( Session session : sessionList )
                 {
                     publishProgress(session);
                 }
@@ -85,15 +96,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             @Override
-            protected void onProgressUpdate(Session... session)
+            protected void onProgressUpdate( Session... session )
             {
                 sessionListFragment.addSession(session[0]);
             }
 
             @Override
-            protected void onPostExecute(ArrayList<Session> result)
+            protected void onPostExecute( ArrayList<Session> result )
             {
-                if (result.size() < 1)
+                if( result.size() < 1 )
                 {
                     leftPaneController.getTextEmptyList().setVisibility(View.VISIBLE);
                     leftPaneController.getTextEmptyList().setText(getString(R.string.label_no_session));
@@ -119,15 +130,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         supportMapFragment.setRetainInstance(true);
         supportMapFragment.getMapAsync(this);
 
-        if ((sessionListFragment == null || !sessionListFragment.isAdded()) && getSupportFragmentManager().getBackStackEntryCount() == 0)
+        if( (sessionListFragment == null || !sessionListFragment.isAdded()) && getSupportFragmentManager().getBackStackEntryCount() == 0 )
         {
             sessionListFragment = new SessionListFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.fragment_container, sessionListFragment).commit();
         }
-        sessionDatabase = Room.databaseBuilder(getApplicationContext(),
-                                               SessionDatabase.class, "database-name"
-                                              ).allowMainThreadQueries().build();
+        appDatabase = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "database-name"
+        ).allowMainThreadQueries().build();
     }
 
     private void initEvent()
@@ -136,14 +147,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapSpinner.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
                 displayPopupWindow(v);
             }
         });
     }
 
-    private void displayPopupWindow(View anchorView)
+    private void displayPopupWindow( View anchorView )
     {
         mapSpinner.setVisibility(View.INVISIBLE);
         popupWindow = new PopupWindow(this);
@@ -154,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         RadioGroup switcher = layout.findViewById(R.id.radioSwitcher);
 
         //set button map
-        if (selectedMapType == Config.GOOGLEMAP)
+        if( selectedMapType == Config.GOOGLEMAP )
         {
             switcher.check(R.id.googlemap);
         }
@@ -166,9 +177,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         switcher.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId)
+            public void onCheckedChanged( RadioGroup group, int checkedId )
             {
-                if (checkedId == R.id.googlemap)
+                if( checkedId == R.id.googlemap )
                 {
                     selectedMapType = Config.GOOGLEMAP;
                 }
@@ -196,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapMinSpinner.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
                 popupWindow.dismiss();
                 mapSpinner.setVisibility(View.VISIBLE);
@@ -208,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void replaceTiles()
     {
-        if (selectedMapType == Config.OPENSTREETMAP)
+        if( selectedMapType == Config.OPENSTREETMAP )
         {
             showOsmMap();
         }
@@ -227,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void hideGoogleMap()
     {
-        if (supportMapFragment != null)
+        if( supportMapFragment != null )
         {
             supportMapFragment.getView().setVisibility(View.GONE);
         }
@@ -238,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         hideOsmMap();
         MapSingleton.getInstance().setSelectedMap(Config.GOOGLEMAP);
         supportMapFragment.getView().setVisibility(View.VISIBLE);
-        if (googleMap != null)
+        if( googleMap != null )
         {
             googleMap.animateCamera(CameraUpdateFactory.zoomTo((float) (mapController.zoomLevelGoogle + 2)));
             googleMap.moveCamera(CameraUpdateFactory.zoomTo((float) (mapController.zoomLevelGoogle + 2)));
@@ -247,14 +258,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void hideOsmMap()
     {
-        if (mapView != null)
+        if( mapView != null )
         {
             mapView.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap)
+    public void onMapReady( GoogleMap googleMap )
     {
         this.googleMap = googleMap;
         mapView.setVisibility(View.GONE);

@@ -27,7 +27,7 @@ public class LeftPaneController
 
     private RelativeLayout layout_header_collapse;
 
-    public LeftPaneController(Context context)
+    public LeftPaneController( Context context )
     {
         this.mainActivity = (MainActivity) context;
         init();
@@ -52,7 +52,7 @@ public class LeftPaneController
         mButtonHideList.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
                 mLayoutLeft.setVisibility(View.GONE);
                 mLayoutCollapse.setVisibility(View.VISIBLE);
@@ -62,7 +62,7 @@ public class LeftPaneController
         mButtonExpandList.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
                 mLayoutCollapse.setVisibility(View.GONE);
                 mLayoutLeft.setVisibility(View.VISIBLE);
@@ -72,7 +72,7 @@ public class LeftPaneController
         layout_header_collapse.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
                 mLayoutCollapse.setVisibility(View.GONE);
                 mLayoutLeft.setVisibility(View.VISIBLE);
@@ -81,9 +81,9 @@ public class LeftPaneController
         mTextHeaderTitle.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
-                if (mButtonArrowBack.getVisibility() == View.VISIBLE)
+                if( mButtonArrowBack.getVisibility() == View.VISIBLE )
                 {
                     (mainActivity).onBackPressed();
                 }
@@ -97,7 +97,7 @@ public class LeftPaneController
         mButtonArrowBack.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
                 (mainActivity).onBackPressed();
             }

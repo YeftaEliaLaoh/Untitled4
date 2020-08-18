@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity
     private Button cancelBtn;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -37,16 +37,16 @@ public class LoginActivity extends AppCompatActivity
         setFieldToDemoVersion(Config.IS_DEMO_VERSION, R.color.light_grey);
     }
 
-    private void setFieldToDemoVersion(boolean isDemoChecked, int textColor)
+    private void setFieldToDemoVersion( boolean isDemoChecked, int textColor )
     {
         username.setTextColor(getResources().getColor(textColor));
         password.setTextColor(getResources().getColor(textColor));
 
         String usernameTxt = Config.DEFAULT_STRING_VALUE;
-        String passwordTxt = Config.DEFAULT_STRING_VALUE; ;
+        String passwordTxt = Config.DEFAULT_STRING_VALUE;
         Config.IS_DEMO_VERSION = false;
 
-        if (isDemoChecked)
+        if( isDemoChecked )
         {
             usernameTxt = Config.DEMO_USERNAME;
             passwordTxt = Config.DEMO_PASSWORD;
@@ -74,11 +74,11 @@ public class LoginActivity extends AppCompatActivity
         loginBtn.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
                 showHiddenButton(loginBtn, View.GONE, R.anim.exit_to_right, R.color.blue_component_clicked);
                 showHiddenButton(cancelBtn, View.VISIBLE, R.anim.enter_from_left, R.color.colorRed);
-                if (Config.IS_DEMO_VERSION)
+                if( Config.IS_DEMO_VERSION )
                 {
                     successToLogin();
                 }
@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity
         cancelBtn.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick( View v )
             {
                 showHiddenButton(loginBtn, View.VISIBLE, R.anim.enter_from_right, R.color.blue_component);
                 showHiddenButton(cancelBtn, View.GONE, R.anim.exit_to_left, R.color.colorRedClicked);
@@ -98,9 +98,9 @@ public class LoginActivity extends AppCompatActivity
         password.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            public boolean onEditorAction( TextView v, int actionId, KeyEvent event )
             {
-                if (actionId == EditorInfo.IME_ACTION_DONE)
+                if( actionId == EditorInfo.IME_ACTION_DONE )
                 {
                     return true;
                 }
@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity
         demoModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+            public void onCheckedChanged( CompoundButton compoundButton, boolean isChecked )
             {
                 changesComponentDemoMode(isChecked);
             }
@@ -125,11 +125,11 @@ public class LoginActivity extends AppCompatActivity
         finish();
     }
 
-    public void showHiddenButton(Button button, int visibility, int animation, int color)
+    public void showHiddenButton( Button button, int visibility, int animation, int color )
     {
         Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), animation);
 
-        switch (visibility)
+        switch ( visibility )
         {
             case View.VISIBLE:
             case View.GONE:
@@ -143,10 +143,10 @@ public class LoginActivity extends AppCompatActivity
         button.setVisibility(visibility);
     }
 
-    private void changesComponentDemoMode(boolean isChecked)
+    private void changesComponentDemoMode( boolean isChecked )
     {
 
-        if (isChecked)
+        if( isChecked )
         {
             setFieldToDemoVersion(true, R.color.light_grey);
         }
@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    public void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults )
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 

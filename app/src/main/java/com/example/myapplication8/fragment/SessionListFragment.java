@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication8.R;
+import com.example.myapplication8.controllers.LeftSessionController;
 import com.example.myapplication8.models.ItemSession;
 import com.example.myapplication8.models.ListviewAdapter;
 import com.example.myapplication8.models.ListviewItem;
@@ -29,7 +30,7 @@ public class SessionListFragment extends Fragment
     public View view;
     public ArrayList<ListviewItem> data = new ArrayList<>();
 
-    //private LeftSessionController controller;
+    private LeftSessionController leftSessionController;
 
     private ArrayList<Session> sessionList;
 
@@ -54,11 +55,11 @@ public class SessionListFragment extends Fragment
         return view;
     }
 
-    // initialize the left session controller object and register for events inside left session
+    // initialize the left session leftSessionController object and register for events inside left session
     private void init()
     {
-        //controller = new LeftSessionController(this);
-        //controller.registerEvent();
+        leftSessionController = new LeftSessionController(this);
+        leftSessionController.registerEvent();
     }
 
     @Override

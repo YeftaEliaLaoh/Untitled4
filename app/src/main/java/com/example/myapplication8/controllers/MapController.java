@@ -43,7 +43,7 @@ public class MapController
     private GoogleMap googleMap;
     private MapView mapView;
 
-    public MapController(MapView mapView, Context context)
+    public MapController( MapView mapView, Context context )
     {
         this.context = context;
         this.openStreetMapController = new OpenStreetMapController(mapView, context);
@@ -52,7 +52,7 @@ public class MapController
         locationList = new ArrayList<>();
     }
 
-    public void setGoogleMap(Context context, GoogleMap googleMap)
+    public void setGoogleMap( Context context, GoogleMap googleMap )
     {
         this.context = context;
         this.gmapController.setGoogleMap(context, googleMap);
@@ -64,7 +64,7 @@ public class MapController
 
     public void registerEventMapWrapper()
     {
-        if (MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP)
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.registerEventGmap(registerEventGmap);
         }
@@ -84,12 +84,12 @@ public class MapController
         return openStreetMapController;
     }
 
-    public void addLocation(Location location)
+    public void addLocation( Location location )
     {
         locationList.add(location);
     }
 
-    public void setLastZoomLevel(double zoomLevel)
+    public void setLastZoomLevel( double zoomLevel )
     {
         this.lastZoomLevel = zoomLevel;
     }
@@ -99,26 +99,26 @@ public class MapController
         return lastZoomLevel;
     }
 
-    public void zoomToBound(LatLngBounds centerBound)
+    public void zoomToBound( LatLngBounds centerBound )
     {
-        if (MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP)
+        if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.animateCameraToBound(centerBound);
         }
-        else if (MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP)
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.animateCameraPosition(centerBound);
         }
     }
 
 
-    public void addLocationPolyline(PolylineOptions polylineOptions, Polyline polyline)
+    public void addLocationPolyline( PolylineOptions polylineOptions, Polyline polyline )
     {
-        if (MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP)
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.addPolyLine(polylineOptions, polylineOptions.getColor());
         }
-        else if (MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP)
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.addPolyline(polyline);
         }
@@ -127,11 +127,11 @@ public class MapController
     // Start Removing section
     public void clearMap()
     {
-        if (MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP)
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.clear();
         }
-        else if (MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP)
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.clear();
             openStreetMapController.clearClusterItem();
@@ -149,20 +149,20 @@ public class MapController
 
     public void removeClusterMarkerItemOsm()
     {
-        for (Marker currentMarker : openStreetMapController.getMarkerOsm())
+        for( Marker currentMarker : openStreetMapController.getMarkerOsm() )
         {
             openStreetMapController.removeFromOsmMap(currentMarker);
         }
     }
 
-    public void zoomToArea(double latitude, double longitude)
+    public void zoomToArea( double latitude, double longitude )
     {
         int zoomLevel = 13;
-        if (MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP)
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
         {
             gmapController.zoomToArea(latitude, longitude, zoomLevel);
         }
-        else if (MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP)
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
         {
             openStreetMapController.setOSMZoomLevel(latitude, longitude, zoomLevel);
         }
@@ -175,7 +175,7 @@ public class MapController
 
         private LatLngBounds.Builder builder;
 
-        public CameraIdleListener(ClusterManager clusterManager)
+        public CameraIdleListener( ClusterManager clusterManager )
         {
             this.clusterManager = clusterManager;
             builder = new LatLngBounds.Builder();
@@ -189,45 +189,45 @@ public class MapController
             zoomLevelOSM = getLastZoomLevel() + 3;
             lastZoomLevel = (int) googleMap.getCameraPosition().zoom - 2;
 
-            if (MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP)
+            if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
                 lastZoomLevel = zoomLevelOSM;
-            else if (MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP)
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
                 lastZoomLevel = zoomLevelGoogle;
             setLastZoomLevel(getLastZoomLevel());
 
         }
 
         @Override
-        public boolean onScroll(ScrollEvent event)
+        public boolean onScroll( ScrollEvent event )
         {
             return false;
         }
 
         @Override
-        public boolean onZoom(ZoomEvent event)
+        public boolean onZoom( ZoomEvent event )
         {
             lastZoomLevel = event.getZoomLevel();
 
             zoomLevelGoogle = getLastZoomLevel() - 3;
             zoomLevelOSM = getLastZoomLevel();
 
-            if (mapView != null)
+            if( mapView != null )
             {
                 IMapController mapController = mapView.getController();
-                if (zoomLevelOSM <= mapView.getMinZoomLevel())
+                if( zoomLevelOSM <= mapView.getMinZoomLevel() )
                 {
                     mapController.setZoom((double) 3);
                     setLastZoomLevel(0);
                 }
-                else if (getLastZoomLevel() >= mapView.getMinZoomLevel())
+                else if( getLastZoomLevel() >= mapView.getMinZoomLevel() )
                 {
                     mapController.setZoom(zoomLevelOSM);
                     setLastZoomLevel(zoomLevelOSM - 3);
                 }
             }
-            if (MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP)
+            if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP )
                 lastZoomLevel = zoomLevelOSM;
-            else if (MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP)
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLEMAP )
                 lastZoomLevel = zoomLevelGoogle;
             setLastZoomLevel(getLastZoomLevel());
             return false;
@@ -237,7 +237,7 @@ public class MapController
     public GoogleMap.OnMapLongClickListener registerEventGmap = new GoogleMap.OnMapLongClickListener()
     {
         @Override
-        public void onMapLongClick(LatLng latLng)
+        public void onMapLongClick( LatLng latLng )
         {
 
         }
@@ -247,13 +247,13 @@ public class MapController
     public MapEventsReceiver registerEventOsm = new MapEventsReceiver()
     {
         @Override
-        public boolean singleTapConfirmedHelper(GeoPoint geoPoint)
+        public boolean singleTapConfirmedHelper( GeoPoint geoPoint )
         {
             return false;
         }
 
         @Override
-        public boolean longPressHelper(GeoPoint geoPoint)
+        public boolean longPressHelper( GeoPoint geoPoint )
         {
             return true;
         }
@@ -262,7 +262,7 @@ public class MapController
 
     private void resetLocationMarker()
     {
-        if (mapSingleton.getSelectedMap() != Config.GOOGLEMAP)
+        if( mapSingleton.getSelectedMap() != Config.GOOGLEMAP )
         {
             openStreetMapController.resetLocationMarker();
         }
@@ -278,7 +278,7 @@ public class MapController
         return updateInfoWindow;
     }
 
-    public void setUpdateInfoWindow(boolean updateInfoWindow)
+    public void setUpdateInfoWindow( boolean updateInfoWindow )
     {
         this.updateInfoWindow = updateInfoWindow;
     }
@@ -293,7 +293,7 @@ public class MapController
         return longitudeLongClick;
     }
 
-    public void setLongPress(boolean longPress)
+    public void setLongPress( boolean longPress )
     {
         isLongPress = longPress;
     }

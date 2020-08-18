@@ -12,4 +12,7 @@ public interface SessionDao
 {
     @Query("SELECT * FROM Session")
     List<Session> getAll();
+
+    @Query("DELETE FROM Session WHERE id = :id;")
+    void deleteById( long id );
 }
