@@ -1,7 +1,11 @@
 package com.example.myapplication8.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -14,9 +18,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
 
 import com.example.myapplication8.R;
 import com.example.myapplication8.utilities.Config;
+
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -71,6 +78,11 @@ public class LoginActivity extends AppCompatActivity
 
     private void initEvent()
     {
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M )
+        {
+            requestPermissions(Config.STORAGE_PERMISSION_GROUP, Config.STORAGE_REQUEST_ID);
+        }
+
         loginBtn.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -160,6 +172,7 @@ public class LoginActivity extends AppCompatActivity
     public void onResume()
     {
         super.onResume();
+
     }
 
     @Override

@@ -18,7 +18,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.myapplication8.R;
 import com.example.myapplication8.activities.MainActivity;
-import com.example.myapplication8.fragment.ScannedListFragment;
 import com.example.myapplication8.fragment.SessionListFragment;
 import com.example.myapplication8.models.Cell;
 import com.example.myapplication8.models.ItemSession;
@@ -46,7 +45,6 @@ public class LeftSessionController
     private SessionListFragment fragment;
     private int selectedCount = 0;
     private MainActivity mainActivity;
-    private ScannedListFragment scannedListFragment;
     private Session currentSession;
 
     private ArrayList<Session> selectedSession;
@@ -58,6 +56,7 @@ public class LeftSessionController
 
     public LeftSessionController( SessionListFragment fragment )
     {
+        mainActivity = (MainActivity) fragment.getActivity();
         this.fragment = fragment;
         this.isLongPressedAllowed = true;
         this.mCheckBox = fragment.view.findViewById(R.id.layout_left_checkbox);
@@ -196,10 +195,6 @@ public class LeftSessionController
         }
     }
 
-    public ScannedListFragment getScannedListFragment()
-    {
-        return this.scannedListFragment;
-    }
 
     private class SessionListOnLongPressListener implements AdapterView.OnItemLongClickListener
     {
@@ -460,21 +455,19 @@ public class LeftSessionController
         ItemSession itemSession = (ItemSession) item;
         FragmentManager fm = fragment.getFragmentManager();
 
-        scannedListFragment = new ScannedListFragment();
         currentSession = itemSession.getSession();
 
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("session", itemSession.getSession());
-        scannedListFragment.setArguments(bundle);
 
         MapSingleton.getInstance().setTouchStatus(true);
 
         // Change textview 'Session List' to 'Scan Result'
         ((TextView) fragment.getActivity().findViewById(R.id.text_header_title_layout_main_left)).setText(fragment.getActivity().getString(R.string.label_scan_result_title));
 
-        fm.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, scannedListFragment, Config.SCAN_FRAGMENT).commit();
-        ((MainActivity) fragment.getActivity()).getLeftPaneController().getButtonArrowBack().setVisibility(View.VISIBLE);
+        //fm.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, scannedListFragment, Config.SCAN_FRAGMENT).commit();
+        //((MainActivity) fragment.getActivity()).getLeftPaneController().getButtonArrowBack().setVisibility(View.VISIBLE);
     }
 
     /**
@@ -607,7 +600,7 @@ public class LeftSessionController
 
             try
             {
-                status = new JSONFileController(mainActivity).read(processedFile, this);
+                //status = new JSONFileController(mainActivity).read(processedFile, this);
             }
             catch ( Exception e )
             {

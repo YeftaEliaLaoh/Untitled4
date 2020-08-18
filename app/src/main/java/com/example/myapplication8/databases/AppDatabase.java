@@ -7,9 +7,10 @@ import com.example.myapplication8.daos.CellDao;
 import com.example.myapplication8.daos.LocationDao;
 import com.example.myapplication8.daos.SessionDao;
 import com.example.myapplication8.models.Cell;
+import com.example.myapplication8.models.MeasuredLocation;
 import com.example.myapplication8.models.Session;
 
-@Database(entities = {Session.class, Cell.class}, version = 1, exportSchema = false)
+@Database(entities = {Session.class, Cell.class, MeasuredLocation.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase
 {
     public abstract SessionDao sessionDao();

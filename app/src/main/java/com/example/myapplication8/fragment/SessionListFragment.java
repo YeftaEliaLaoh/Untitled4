@@ -46,7 +46,7 @@ public class SessionListFragment extends Fragment
         // Inflate the layout for this fragment
         if( view == null )
         {
-            //view = inflater.inflate(R.layout.layout_sesion_fragment, container, false);
+            view = inflater.inflate(R.layout.layout_sesion_fragment, container, false);
             adapter = new ListviewAdapter(this.getActivity(), 0, data);
             sessionList = new ArrayList<>();
             init();
