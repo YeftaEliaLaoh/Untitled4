@@ -1,4 +1,4 @@
-package com.example.myapplication8.fragments.
+package com.example.myapplication8.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -34,6 +34,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.PathOverlay;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScannedListFragment extends Fragment
 {
@@ -158,7 +159,7 @@ public class ScannedListFragment extends Fragment
 
     private synchronized void populateCellInfoAsync( final MainActivity mActivity, final Session session )
     {
-        ArrayList<Cell> list;
+        List<Cell> list;
 
         if( session.getCellList().size() > 0 )
         {
@@ -169,7 +170,7 @@ public class ScannedListFragment extends Fragment
             list = mainActivity.getAppDatabase().cellDao().getUniqueCellBySessionIdLimited(session.getId(), 0);
         }
 
-        session.setCellList(list);
+        session.setCellList((ArrayList<Cell>) list);
         addCellToRadioList = selectedCell != session.getCellList().size();
 
         selectedCell = 0;
@@ -200,7 +201,7 @@ public class ScannedListFragment extends Fragment
             selectedRadio.add(cellCalculation);
         }
 
-        mainActivity.getMapWrapper().drawClusterOsmOnMap();
+        mainActivity.getMapController().drawClusterOsmOnMap();
         mAdapter.notifyDataSetChanged();
 
     }
@@ -210,30 +211,30 @@ public class ScannedListFragment extends Fragment
         if( selectedItem == 1 )
         {
             //its not clear marker yet in osm
-            mainActivity.getMapWrapper().clearMap();
+            mainActivity.getMapController().clearMap();
         }
 
         // Step 2
         //clear cluster item to handle select radio item in osm
         if( cellCalculation.getCenterBound() != null )
         {
-            mainActivity.getMapWrapper().zoomToBound(cellCalculation.getCenterBound());
+            mainActivity.getMapController().zoomToBound(cellCalculation.getCenterBound());
         }
 
-        mainActivity.getMapWrapper().clearClusterOsmOnMap();
+        mainActivity.getMapController().clearClusterOsmOnMap();
 
         // Step 3
         if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_CELL )
         {
-            mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell(), Config.SCANNED_TYPE_CELL);
+            mainActivity.getMapController().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell(), Config.SCANNED_TYPE_CELL);
         }
         else if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_WIFI )
         {
-            mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi(), Config.SCANNED_TYPE_WIFI);
+            mainActivity.getMapController().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi(), Config.SCANNED_TYPE_WIFI);
         }
 
         // Step 4
-        mainActivity.getMapWrapper().drawLocationBasedOnSelectedProfile(cellCalculation, profileSingleton.getSelectedLocation());
+        mainActivity.getMapController().drawLocationBasedOnSelectedProfile(cellCalculation, profileSingleton.getSelectedLocation());
     }
 
     /**
@@ -245,42 +246,33 @@ public class ScannedListFragment extends Fragment
     public void unselectRadioItem( CellCalculation cellCalculation )
     {
         // Step 1
-        mainActivity.getMapWrapper().removeLocationBasedOnSelectedProfile(cellCalculation);
+        mainActivity.getMapController().removeLocationBasedOnSelectedProfile(cellCalculation);
 
         // Step 2
         if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_CELL )
         {
-            mainActivity.getMapWrapper().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell());
+            mainActivity.getMapController().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell());
 
         }
         else if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_WIFI )
         {
-            mainActivity.getMapWrapper().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi());
+            mainActivity.getMapController().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi());
         }
 
 
         if( selectedItem == 0 )
         {
             selectedCell = session.getCellList().size();
-            selectedWifi = session.getWifiList().size();
-
-            // Step 3
             redrawOnClearSelected();
 
-            // Step 4
             for( ListviewItem listviewItem : mData )
             {
                 ItemCellCalculation itemCellCalc = (ItemCellCalculation) listviewItem;
                 CellCalculation cellCalc = itemCellCalc.getCellCalculation();
                 if( cellCalc.getCurrentScannedType() == Config.SCANNED_TYPE_CELL && selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
                 {
-                    mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalc, profileSingleton.getOverviewCell(), Config.SCANNED_TYPE_CELL);
+                    mainActivity.getMapController().drawRadioBasedOnProfile(cellCalc, profileSingleton.getOverviewCell(), Config.SCANNED_TYPE_CELL);
                     selectedCell++;
-                }
-                else if( cellCalc.getCurrentScannedType() == Config.SCANNED_TYPE_WIFI && selectedWifi < profileSingleton.getOverviewWifi().getRadioNumber().getAmountRadio() )
-                {
-                    mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalc, profileSingleton.getOverviewWifi(), Config.SCANNED_TYPE_WIFI);
-                    selectedWifi++;
                 }
 
             }
@@ -291,8 +283,6 @@ public class ScannedListFragment extends Fragment
     @Override
     public void onStop()
     {
-        // There was a 'googlemap.clear() command here
-        // was removed in respond to fix issue-8370-CellTrax_task_scan_result_missing
         super.onStop();
     }
 
@@ -326,7 +316,7 @@ public class ScannedListFragment extends Fragment
             // Draw the cells
             if( !profileSingleton.getOverviewCell().getRadioNumber().isShowing() || selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
             {
-                mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculations[0], profileSingleton.getOverviewCell(), Config.SCANNED_TYPE_CELL);
+                mainActivity.getMapController().drawRadioBasedOnProfile(cellCalculations[0], profileSingleton.getOverviewCell(), Config.SCANNED_TYPE_CELL);
             }
 
 
@@ -372,7 +362,7 @@ public class ScannedListFragment extends Fragment
             {
                 if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP && selectedCell == session.getCellList().size() )
                 {
-                    mainActivity.getMapWrapper().drawClusterOsmOnMap();
+                    mainActivity.getMapController().drawClusterOsmOnMap();
                 }
             }
         }
@@ -410,7 +400,7 @@ public class ScannedListFragment extends Fragment
 
     public void onRefreshScannedResults()
     {
-        ArrayList<Cell> cellListRefresh = mainActivity.getCellTable().getUniqueCellBySessionIdLimited(session.getId(), session.getCellList().size());
+        List<Cell> cellListRefresh = mainActivity.getAppDatabase().cellDao().getUniqueCellBySessionIdLimited(session.getId(), session.getCellList().size());
 
         if( cellListRefresh.size() != 0 )
         {
@@ -434,7 +424,7 @@ public class ScannedListFragment extends Fragment
                 new CellAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cell);
             }
         }
-        
+
     }
 
     public void drawLocationOnMapAsync( MeasuredLocation measuredLocation )
@@ -457,18 +447,18 @@ public class ScannedListFragment extends Fragment
         {
             pathOverlay.setColor(profileSingleton.getOverviewLocation().getLineOfRoute().getColor());
             polylineOptions.color(profileSingleton.getOverviewLocation().getLineOfRoute().getColor());
-            mainActivity.getMapWrapper().addLocationPolyline(polylineOptions, pathOverlay);
+            mainActivity.getMapController().addLocationPolyline(polylineOptions, pathOverlay);
         }
 
         if( isPointIncluded )
         {
             bounds = builder.build();
-            mainActivity.getMapWrapper().zoomToBound(bounds);
+            mainActivity.getMapController().zoomToBound(bounds);
         }
 
         locationHashMap.put(measuredLocation.getId(), measuredLocation);
-        mainActivity.getMapWrapper().drawLocationBasedOnProfile(mainActivity, measuredLocation, profileSingleton.getOverviewLocation());
-        
+        mainActivity.getMapController().drawLocationBasedOnProfile(mainActivity, measuredLocation, profileSingleton.getOverviewLocation());
+
     }
 
     public SparseArray<MeasuredLocation> getLocationHashMap()

@@ -64,8 +64,6 @@ public class Config
     public static final String LONGITUDE_KEY = "longitude";
     public static final String DATE_TIME_KEY = "date_time";
     public static final int RESULTS_LOADER_LIMIT = 5;
-
-
     public static final String TAG_FILE_ID = "tag";
 
 }

@@ -21,7 +21,7 @@ public interface CellDao
     int getCellCountBySessionId( long id );
 
     @Query("SELECT id, sessionId,cellReference,mcc,mnc,lac,cellId,locationId,radioType,psc FROM Cell WHERE sessionId = :sessionId GROUP BY cellReference ORDER BY id ASC LIMIT :startRecord , " + Config.RESULTS_LOADER_LIMIT)
-    ArrayList<Cell> getUniqueCellBySessionIdLimited( long sessionId, int startRecord );
+    List<Cell> getUniqueCellBySessionIdLimited( long sessionId, int startRecord );
 
     @Query("DELETE FROM Cell WHERE sessionId = :sessionId;")
     void deleteBySessionId( long sessionId );

@@ -42,6 +42,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LeftPaneController leftPaneController;
     private SessionListFragment sessionListFragment;
 
+
+    public MapController getMapController()
+    {
+        return mapController;
+    }
+
+    public void setMapController( MapController mapController )
+    {
+        this.mapController = mapController;
+    }
+
+    public LeftPaneController getLeftPaneController()
+    {
+        return leftPaneController;
+    }
+
+    public void setLeftPaneController( LeftPaneController leftPaneController )
+    {
+        this.leftPaneController = leftPaneController;
+    }
+
     public AppDatabase getAppDatabase()
     {
         return appDatabase;

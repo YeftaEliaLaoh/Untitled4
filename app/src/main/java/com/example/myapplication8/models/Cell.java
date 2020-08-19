@@ -1,11 +1,19 @@
 package com.example.myapplication8.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.telephony.CellInfo;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.example.myapplication8.utilities.Config;
+import com.example.myapplication8.utilities.Utility;
+
 @Entity
-public class Cell extends Radio
+public class Cell extends Radio implements Parcelable
+
 {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -27,6 +35,10 @@ public class Cell extends Radio
     private String radioType;
     @ColumnInfo(name = "locationId")
     private long locationId;
+
+    public Cell(Parcel parcel){
+        readFromParcel(parcel);
+    }
 
     public int getId()
     {
@@ -127,4 +139,81 @@ public class Cell extends Radio
     {
         this.locationId = locationId;
     }
+
+    public void generateCellRef()
+    {
+        cellId = Utility.getCid(Utility.convertByteArrayP(cellId));
+        cellReference = Utility.generateCellReference(String.valueOf(mcc).concat(String.valueOf(mnc)), lac, cellId, false);
+    }
+
+    public void setCellRefWithRNC( String cellRefWithRNC )
+    {
+    }
+
+    public String getCellRefWithRNC()
+    {
+        cellId = Utility.getCid(Utility.convertByteArrayP(cellId));
+        return Utility.generateCellReference(String.valueOf(mcc).concat(String.valueOf(mnc)), lac, cellId, true);
+    }
+
+    @Override
+    public int describeContents()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+
+    public void writeToParcel( Parcel parcel, int flags )
+    {
+        parcel.writeInt(id);
+        parcel.writeInt(sessionId);
+        parcel.writeString(cellReference);
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
+        //parcel.writeDouble(elevation);
+        //parcel.writeDouble(accuracy);
+        parcel.writeInt(mcc);
+        parcel.writeInt(mnc);
+        parcel.writeInt(lac);
+        parcel.writeInt(cellId);
+        parcel.writeInt(psc);
+        parcel.writeString(datetime);
+        parcel.writeString(radioType);
+        parcel.writeLong(locationId);
+
+    }
+
+    protected void readFromParcel( Parcel parcel )
+    {
+        id = parcel.readInt();
+        session_id = parcel.readInt();
+        cellReference = parcel.readString();
+        latitude = parcel.readDouble();
+        longitude = parcel.readDouble();
+        elevation = parcel.readDouble();
+        accuracy = parcel.readDouble();
+        mcc = parcel.readInt();
+        mnc = parcel.readInt();
+        lac = parcel.readInt();
+        cellId = parcel.readInt();
+        psc = parcel.readInt();
+        datetime = parcel.readString();
+        radioType = parcel.readString();
+        locationId = parcel.readLong();
+
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator()
+    {
+        public Cell createFromParcel( Parcel in )
+        {
+            return new Cell(in);
+        }
+
+        public Cell[] newArray( int size )
+        {
+            return new Cell[size];
+        }
+    };
 }

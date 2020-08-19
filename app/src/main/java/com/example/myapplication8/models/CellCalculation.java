@@ -475,7 +475,6 @@ public class CellCalculation
     public PolygonOptions setHullPolylineOptions( int color, int outlinecolor )
     {
         PolygonOptions convexHullOptions = new PolygonOptions();
-        // convexHullOptions.fillColor(0x5500ff00);
         convexHullOptions.fillColor(color);
         convexHullOptions.strokeWidth(3f);
         convexHullOptions.strokeColor(outlinecolor);
