@@ -14,11 +14,17 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.example.myapplication8.R;
 import com.example.myapplication8.activities.MainActivity;
+import com.example.myapplication8.models.Cell;
+import com.example.myapplication8.models.CellCalculation;
+import com.example.myapplication8.models.ItemCellCalculation;
 import com.example.myapplication8.models.ListviewAdapter;
 import com.example.myapplication8.models.ListviewItem;
+import com.example.myapplication8.models.MapSingleton;
 import com.example.myapplication8.models.MeasuredLocation;
 import com.example.myapplication8.models.Session;
+import com.example.myapplication8.utilities.Config;
 import com.example.myapplication8.utilities.SwipeRefreshLayoutBottom;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -40,10 +46,9 @@ public class ScannedListFragment extends Fragment
     private SwipeRefreshLayoutBottom mSwipe;
     private ArrayList<ListviewItem> mData = new ArrayList<>();
     private ArrayList<CellCalculation> selectedRadio;
-    private MainActivity mActivity;
+    private MainActivity mainActivity;
 
     private int selectedCell;
-    private int selectedWifi;
     private Session session;
 
     private boolean isPointIncluded = false;
@@ -99,11 +104,8 @@ public class ScannedListFragment extends Fragment
         FrameLayout mRootLayout = view.findViewById(R.id.root_layout);
         mRootLayout.setForeground(new ColorDrawable(Color.BLACK));
         mRootLayout.getForeground().setAlpha(0);
-
         mRootLayout.addView(mSwipe);
-
         mListView.setAdapter(mAdapter);
-        //end refresh list
 
         selectedRadio = new ArrayList<>();
 
@@ -118,9 +120,6 @@ public class ScannedListFragment extends Fragment
         });
 
         selectedCell = 0;
-        selectedWifi = 0;
-        //To do : set from profile
-        int defaultLocation = 0;
 
         Bundle args = getArguments();
         if( null != args.getParcelable("session") )
@@ -135,14 +134,9 @@ public class ScannedListFragment extends Fragment
 
     public void populateScannedList( Session session )
     {
-        if( mActivity instanceof MainActivity )
+        if( mainActivity instanceof MainActivity )
         {
-            populateCellInfoAsync(mActivity, session);
-            if( mData.size() < 1 )
-            {
-                mActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.VISIBLE);
-                mActivity.getLeftPaneController().getTextEmptyList().setText("There is no scan result");
-            }
+            populateCellInfoAsync(mainActivity, session);
         }
 
     }
@@ -158,14 +152,12 @@ public class ScannedListFragment extends Fragment
         super.onAttach(context);
         if( context instanceof MainActivity )
         {
-            mActivity = (MainActivity) context;
+            mainActivity = (MainActivity) context;
         }
-        this.profileSingleton = ProfileSettingSingleton.getInstance();
     }
 
     private synchronized void populateCellInfoAsync( final MainActivity mActivity, final Session session )
     {
-        CellTable cellTable = mActivity.getCellTable();
         ArrayList<Cell> list;
 
         if( session.getCellList().size() > 0 )
@@ -174,61 +166,16 @@ public class ScannedListFragment extends Fragment
         }
         else
         {
-            list = cellTable.getUniqueCellBySessionIdLimited(session.getId(), 0);
+            list = mainActivity.getAppDatabase().cellDao().getUniqueCellBySessionIdLimited(session.getId(), 0);
         }
 
-        if( list.size() < 1 || session.getWifiList().size() > 0 )
-        {
-            populateWifiInfoAsync(mActivity, session);
-        }
-        else
-        {
-            session.setCellList(list);
-            addCellToRadioList = selectedCell != session.getCellList().size();
-        }
+        session.setCellList(list);
+        addCellToRadioList = selectedCell != session.getCellList().size();
 
         selectedCell = 0;
         for( Cell cell : list )
         {
             new CellAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cell);
-        }
-    }
-
-    private synchronized void populateWifiInfoAsync( final MainActivity mActivity, final Session session )
-    {
-
-        WifiTable wifiTable = mActivity.getWifiTable();
-        ArrayList<Wifi> list;
-
-        if( session.getWifiList().size() > 0 )
-        {
-            list = session.getWifiList();
-        }
-        else
-        {
-            list = wifiTable.getUniqueWifiBySessionIdLimited(session.getId(), 0);
-        }
-
-        session.setWifiList(list);
-
-        if( list.size() < 1 )
-        {
-            return;
-        }
-
-        if( selectedWifi == session.getWifiList().size() )
-        {
-            addWifiToRadioList = false;
-        }
-        else
-        {
-            addWifiToRadioList = true;
-        }
-
-        selectedWifi = 0;
-        for( Wifi wifi : list )
-        {
-            new WifiAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, wifi);
         }
     }
 
@@ -253,48 +200,40 @@ public class ScannedListFragment extends Fragment
             selectedRadio.add(cellCalculation);
         }
 
-        mActivity.getMapWrapper().drawClusterOsmOnMap();
+        mainActivity.getMapWrapper().drawClusterOsmOnMap();
         mAdapter.notifyDataSetChanged();
 
     }
 
-    /**
-     * Step 1: If only 1 RadioItem is selected, clear the maps first because there were elements from Overview drawing
-     * Step 2: Zoom to selected Radio's center position
-     * Step 3: Draw the Radio details on the map based on the current 'Selected Cell or Wifi' sub profile
-     * Step 4: Draw the Radio details on the map based on the current 'Selected Location' sub profile
-     */
     public void selectRadioItem( CellCalculation cellCalculation )
     {
-        //        mActivity.getMapWrapper().setLastZoomLevel(-1);
-        // Step 1
         if( selectedItem == 1 )
         {
             //its not clear marker yet in osm
-            mActivity.getMapWrapper().clearMap();
+            mainActivity.getMapWrapper().clearMap();
         }
 
         // Step 2
         //clear cluster item to handle select radio item in osm
         if( cellCalculation.getCenterBound() != null )
         {
-            mActivity.getMapWrapper().zoomToBound(cellCalculation.getCenterBound());
+            mainActivity.getMapWrapper().zoomToBound(cellCalculation.getCenterBound());
         }
 
-        mActivity.getMapWrapper().clearClusterOsmOnMap();
+        mainActivity.getMapWrapper().clearClusterOsmOnMap();
 
         // Step 3
-        if( cellCalculation.getCurrentScannedType() == Global.SCANNED_TYPE_CELL )
+        if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_CELL )
         {
-            mActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell(), Global.SCANNED_TYPE_CELL);
+            mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell(), Config.SCANNED_TYPE_CELL);
         }
-        else if( cellCalculation.getCurrentScannedType() == Global.SCANNED_TYPE_WIFI )
+        else if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_WIFI )
         {
-            mActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi(), Global.SCANNED_TYPE_WIFI);
+            mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi(), Config.SCANNED_TYPE_WIFI);
         }
 
         // Step 4
-        mActivity.getMapWrapper().drawLocationBasedOnSelectedProfile(cellCalculation, profileSingleton.getSelectedLocation());
+        mainActivity.getMapWrapper().drawLocationBasedOnSelectedProfile(cellCalculation, profileSingleton.getSelectedLocation());
     }
 
     /**
@@ -306,17 +245,17 @@ public class ScannedListFragment extends Fragment
     public void unselectRadioItem( CellCalculation cellCalculation )
     {
         // Step 1
-        mActivity.getMapWrapper().removeLocationBasedOnSelectedProfile(cellCalculation);
+        mainActivity.getMapWrapper().removeLocationBasedOnSelectedProfile(cellCalculation);
 
         // Step 2
-        if( cellCalculation.getCurrentScannedType() == Global.SCANNED_TYPE_CELL )
+        if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_CELL )
         {
-            mActivity.getMapWrapper().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell());
+            mainActivity.getMapWrapper().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell());
 
         }
-        else if( cellCalculation.getCurrentScannedType() == Global.SCANNED_TYPE_WIFI )
+        else if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_WIFI )
         {
-            mActivity.getMapWrapper().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi());
+            mainActivity.getMapWrapper().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi());
         }
 
 
@@ -333,14 +272,14 @@ public class ScannedListFragment extends Fragment
             {
                 ItemCellCalculation itemCellCalc = (ItemCellCalculation) listviewItem;
                 CellCalculation cellCalc = itemCellCalc.getCellCalculation();
-                if( cellCalc.getCurrentScannedType() == Global.SCANNED_TYPE_CELL && selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
+                if( cellCalc.getCurrentScannedType() == Config.SCANNED_TYPE_CELL && selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
                 {
-                    mActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalc, profileSingleton.getOverviewCell(), Global.SCANNED_TYPE_CELL);
+                    mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalc, profileSingleton.getOverviewCell(), Config.SCANNED_TYPE_CELL);
                     selectedCell++;
                 }
-                else if( cellCalc.getCurrentScannedType() == Global.SCANNED_TYPE_WIFI && selectedWifi < profileSingleton.getOverviewWifi().getRadioNumber().getAmountRadio() )
+                else if( cellCalc.getCurrentScannedType() == Config.SCANNED_TYPE_WIFI && selectedWifi < profileSingleton.getOverviewWifi().getRadioNumber().getAmountRadio() )
                 {
-                    mActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalc, profileSingleton.getOverviewWifi(), Global.SCANNED_TYPE_WIFI);
+                    mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalc, profileSingleton.getOverviewWifi(), Config.SCANNED_TYPE_WIFI);
                     selectedWifi++;
                 }
 
@@ -363,90 +302,13 @@ public class ScannedListFragment extends Fragment
     }
 
 
-    private class WifiAsyncTask extends AsyncTask<Wifi, CellCalculation, Void>
-    {
-        @Override
-        protected Void doInBackground( Wifi... wifi )
-        {
-            CellCalculation cellCalculation = new CellCalculation(Global.SCANNED_TYPE_WIFI);
-
-            // Set convex hull points and wifi list
-            cellCalculation = mActivity.getWifiTable().getByMacAddressAndSessionId(cellCalculation, session.getId(), wifi[0].getBssid());
-
-            cellCalculation.calculateCenter();
-            publishProgress(cellCalculation);
-
-            return null;
-        }
-
-        @Override
-        protected synchronized void onProgressUpdate( CellCalculation... calculations )
-        {
-            ItemCellCalculation item = new ItemCellCalculation(calculations[0]);
-            item.onSelected = false;
-
-            new WifiLocationAsyncTask().executeOnExecutor(THREAD_POOL_EXECUTOR, calculations[0].getWifiList());
-
-            if( !profileSingleton.getOverviewWifi().getRadioNumber().isShowing() || selectedWifi < profileSingleton.getOverviewWifi().getRadioNumber().getAmountRadio() )
-            {
-                mActivity.getMapWrapper().drawRadioBasedOnProfile(calculations[0], profileSingleton.getOverviewWifi(), Global.SCANNED_TYPE_WIFI);
-            }
-
-            if( !selectionOnClear )
-            {
-                selectedWifi++;
-            }
-
-            if( addWifiToRadioList )
-            {
-                mData.add(item);
-                mAdapter.notifyDataSetChanged();
-
-                if( selectedWifi == session.getWifiList().size() )
-                {
-                    addWifiToRadioList = false;
-                    if( mSwipe.isRefreshing() )
-                    {
-                        mSwipe.setRefreshing(false);
-                    }
-                }
-                else
-                {
-                    addWifiToRadioList = true;
-                }
-
-                if( mActivity.getLeftPaneController().getTextEmptyList().getVisibility() == View.VISIBLE )
-                {
-                    mActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.INVISIBLE);
-                }
-            }
-        }
-
-        @Override
-        synchronized protected void onPostExecute( Void params )
-        {
-            if( mData.size() < 1 )
-            {
-                mActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.VISIBLE);
-                mActivity.getLeftPaneController().getTextEmptyList().setText("There is no scan result");
-            }
-            else
-            {
-                if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP && selectedWifi == session.getWifiList().size() )
-                {
-                    mActivity.getMapWrapper().drawClusterOsmOnMap();
-                }
-            }
-        }
-    }
-
     private class CellAsyncTask extends AsyncTask<Cell, CellCalculation, Void>
     {
         @Override
         protected Void doInBackground( Cell... cell )
         {
-            CellCalculation cellCalculation = new CellCalculation(Global.SCANNED_TYPE_CELL);
-            cellCalculation = mActivity.getCellTable().getByCellRefAndSessionId(cellCalculation, session.getId(), cell[0].getCellReference());
+            CellCalculation cellCalculation = new CellCalculation(Config.SCANNED_TYPE_CELL);
+            cellCalculation = mainActivity.getCellTable().getByCellRefAndSessionId(cellCalculation, session.getId(), cell[0].getCellReference());
 
             cellCalculation.calculateCenter();
             publishProgress(cellCalculation);
@@ -464,7 +326,7 @@ public class ScannedListFragment extends Fragment
             // Draw the cells
             if( !profileSingleton.getOverviewCell().getRadioNumber().isShowing() || selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
             {
-                mActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculations[0], profileSingleton.getOverviewCell(), Global.SCANNED_TYPE_CELL);
+                mainActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculations[0], profileSingleton.getOverviewCell(), Config.SCANNED_TYPE_CELL);
             }
 
 
@@ -491,9 +353,9 @@ public class ScannedListFragment extends Fragment
                     addCellToRadioList = true;
                 }
 
-                if( mActivity.getLeftPaneController().getTextEmptyList().getVisibility() == View.VISIBLE )
+                if( mainActivity.getLeftPaneController().getTextEmptyList().getVisibility() == View.VISIBLE )
                 {
-                    mActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.INVISIBLE);
+                    mainActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.INVISIBLE);
                 }
             }
         }
@@ -503,14 +365,14 @@ public class ScannedListFragment extends Fragment
         {
             if( mData.size() < 1 )
             {
-                mActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.VISIBLE);
-                mActivity.getLeftPaneController().getTextEmptyList().setText("There is no scan result");
+                mainActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.VISIBLE);
+                mainActivity.getLeftPaneController().getTextEmptyList().setText("There is no scan result");
             }
             else
             {
-                if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP && selectedCell == session.getCellList().size() )
+                if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP && selectedCell == session.getCellList().size() )
                 {
-                    mActivity.getMapWrapper().drawClusterOsmOnMap();
+                    mainActivity.getMapWrapper().drawClusterOsmOnMap();
                 }
             }
         }
@@ -546,39 +408,9 @@ public class ScannedListFragment extends Fragment
         }
     }
 
-    private class WifiLocationAsyncTask extends AsyncTask<ArrayList<Wifi>, Wifi, Void>
-    {
-        @Override
-        protected Void doInBackground( ArrayList<Wifi>... wifis )
-        {
-            for( Wifi wifi : wifis[0] )
-            {
-                publishProgress(wifi);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate( Wifi... wifi )
-        {
-            drawLocationOnMapAsync(wifi[0].getMeasuredLocation());
-        }
-
-        @Override
-        protected void onPostExecute( Void params )
-        {
-            if( selectionOnClear )
-            {
-                selectionOnClear = false;
-            }
-        }
-    }
-
     public void onRefreshScannedResults()
     {
-        ArrayList<Cell> cellListRefresh = mActivity.getCellTable().getUniqueCellBySessionIdLimited(session.getId(), session.getCellList().size());
-        ArrayList<Wifi> wifiListRefresh = mActivity.getWifiTable().getUniqueWifiBySessionIdLimited(session.getId(), session.getWifiList().size());
+        ArrayList<Cell> cellListRefresh = mainActivity.getCellTable().getUniqueCellBySessionIdLimited(session.getId(), session.getCellList().size());
 
         if( cellListRefresh.size() != 0 )
         {
@@ -587,23 +419,6 @@ public class ScannedListFragment extends Fragment
             {
                 session.getCellList().add(cellAdded);
                 new CellAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cellAdded);
-            }
-        }
-        else
-        {
-            if( wifiListRefresh.size() != 0 )
-            {
-                addWifiToRadioList = true;
-                for( Wifi wifiAdded : wifiListRefresh )
-                {
-                    session.getWifiList().add(wifiAdded);
-                    new WifiAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, wifiAdded);
-                }
-            }
-            else
-            {
-                mSwipe.setRefreshing(false);
-                mSwipe.setEnabled(false);
             }
         }
     }
@@ -619,20 +434,13 @@ public class ScannedListFragment extends Fragment
                 new CellAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, cell);
             }
         }
-
-        if( session.getWifiList().size() != 0 )
-        {
-            for( Wifi wifi : session.getWifiList() )
-            {
-                new WifiAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, wifi);
-            }
-        }
+        
     }
 
     public void drawLocationOnMapAsync( MeasuredLocation measuredLocation )
     {
         PolylineOptions polylineOptions = new PolylineOptions();
-        PathOverlay pathOverlay = new PathOverlay(Color.BLACK, mActivity);
+        PathOverlay pathOverlay = new PathOverlay(Color.BLACK, mainActivity);
         LatLng point;
 
         point = new LatLng(measuredLocation.getLatitude(), measuredLocation.getLongitude());
@@ -649,19 +457,18 @@ public class ScannedListFragment extends Fragment
         {
             pathOverlay.setColor(profileSingleton.getOverviewLocation().getLineOfRoute().getColor());
             polylineOptions.color(profileSingleton.getOverviewLocation().getLineOfRoute().getColor());
-            mActivity.getMapWrapper().addLocationPolyline(polylineOptions, pathOverlay);
+            mainActivity.getMapWrapper().addLocationPolyline(polylineOptions, pathOverlay);
         }
 
         if( isPointIncluded )
         {
             bounds = builder.build();
-            mActivity.getMapWrapper().zoomToBound(bounds);
+            mainActivity.getMapWrapper().zoomToBound(bounds);
         }
 
         locationHashMap.put(measuredLocation.getId(), measuredLocation);
-        mActivity.getMapWrapper().drawLocationBasedOnProfile(mActivity, measuredLocation, profileSingleton.getOverviewLocation());
-
-
+        mainActivity.getMapWrapper().drawLocationBasedOnProfile(mainActivity, measuredLocation, profileSingleton.getOverviewLocation());
+        
     }
 
     public SparseArray<MeasuredLocation> getLocationHashMap()

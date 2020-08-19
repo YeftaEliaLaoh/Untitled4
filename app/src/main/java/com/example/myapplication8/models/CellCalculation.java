@@ -5,6 +5,10 @@ import android.graphics.Paint;
 import android.location.Location;
 import android.util.Log;
 
+import com.example.myapplication8.utilities.Config;
+import com.example.myapplication8.utilities.ConvexHull;
+import com.example.myapplication8.utilities.Point;
+import com.example.myapplication8.utilities.Utility;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -27,7 +31,6 @@ public class CellCalculation
     private Point[] convexHullPoints;
 
     private ArrayList<Cell> cellList;
-    private ArrayList<Wifi> wifiList;
     private LatLng center;
     private LatLng northEast;
     private LatLng southWest;
@@ -61,10 +64,9 @@ public class CellCalculation
 
     private boolean pointIncluded = false;
 
-    public CellCalculation( int scannedType){
+    public CellCalculation( int scannedType )
+    {
         cellList = new ArrayList<>();
-        wifiList = new ArrayList<>();
-
         cellListMarker = new ArrayList<>();
         locationListMarker = new ArrayList<>();
         locationCenterIconListMarker = new ArrayList<>();
@@ -76,69 +78,54 @@ public class CellCalculation
         this.currentScannedType = scannedType;
     }
 
-    public int getCurrentScannedType(){
+    public int getCurrentScannedType()
+    {
         return this.currentScannedType;
     }
 
-    public int getMeasurement(){
-        if(currentScannedType == Global.SCANNED_TYPE_CELL)
+    public int getMeasurement()
+    {
+        if( currentScannedType == Config.SCANNED_TYPE_CELL )
         {
             return cellList.size();
         }
-        else if(currentScannedType == Global.SCANNED_TYPE_WIFI)
-        {
-            return wifiList.size();
-        }
+
         return 0;
     }
 
-    public Point[] getConvexHullPoints(){
+    public Point[] getConvexHullPoints()
+    {
         return this.convexHullPoints;
     }
 
-    public void setConvexHullPoints(Point[] convexHullPoints){
+    public void setConvexHullPoints( Point[] convexHullPoints )
+    {
         this.convexHullPoints = convexHullPoints;
     }
 
-    public void setWifiList( ArrayList<Wifi> wifiList){
-        this.wifiList = wifiList;
-    }
-
-    public void setCellList( ArrayList<Cell> cellList){
+    public void setCellList( ArrayList<Cell> cellList )
+    {
         this.cellList = cellList;
     }
 
-    public ArrayList<Cell> getCellList(){
+    public ArrayList<Cell> getCellList()
+    {
         return this.cellList;
     }
 
-    public ArrayList<Wifi> getWifiList(){
-        return this.wifiList;
-    }
-
-
     // get maximum signal strength based on wifi or cell
-    public int getMaxSignalStrength(){
+    public int getMaxSignalStrength()
+    {
         int size;
         int[] items = null;
-        if(currentScannedType == Global.SCANNED_TYPE_CELL)
+        if( currentScannedType == Config.SCANNED_TYPE_CELL )
         {
             size = cellList.size();
             items = new int[size];
 
-            for(int i = 0; i < size; i++)
+            for( int i = 0; i < size; i++ )
             {
                 items[i] = cellList.get(i).getSignalStrength();
-            }
-        }
-        else if(currentScannedType == Global.SCANNED_TYPE_WIFI)
-        {
-            size = wifiList.size();
-            items = new int[size];
-
-            for(int i = 0; i < size; i++)
-            {
-                items[i] = wifiList.get(i).getSignalStrength();
             }
         }
 
@@ -146,27 +133,18 @@ public class CellCalculation
     }
 
     // get minimum signal strength based on wifi or cell
-    public int getMinSignalStrength(){
+    public int getMinSignalStrength()
+    {
         int size;
         int[] items = null;
-        if(currentScannedType == Global.SCANNED_TYPE_CELL)
+        if( currentScannedType == Config.SCANNED_TYPE_CELL )
         {
             size = cellList.size();
             items = new int[size];
 
-            for(int i = 0; i < size; i++)
+            for( int i = 0; i < size; i++ )
             {
                 items[i] = cellList.get(i).getSignalStrength();
-            }
-        }
-        else if(currentScannedType == Global.SCANNED_TYPE_WIFI)
-        {
-            size = wifiList.size();
-            items = new int[size];
-
-            for(int i = 0; i < size; i++)
-            {
-                items[i] = wifiList.get(i).getSignalStrength();
             }
         }
 
@@ -175,12 +153,13 @@ public class CellCalculation
 
     // get cell reference of the first cell from cell list, if scanned type is cell, the expected cell reference format is mcc.mnc.lac.cid.
     // if scanned type is wifi return empty string
-    public String getCellReference(){
-        if(currentScannedType != Global.SCANNED_TYPE_CELL)
+    public String getCellReference()
+    {
+        if( currentScannedType != Config.SCANNED_TYPE_CELL )
         {
             return "";
         }
-        else if(cellList.size() > 0)
+        else if( cellList.size() > 0 )
         {
             return (cellList.get(0)).getCellRefWithRNC();
         }
@@ -189,106 +168,73 @@ public class CellCalculation
 
     // return the cell radio type of the first cell from the list
     // if scanned type is wifi return empty string
-    public String getCellRadioType(){
-        if(currentScannedType != Global.SCANNED_TYPE_CELL)
+    public String getCellRadioType()
+    {
+        if( currentScannedType != Config.SCANNED_TYPE_CELL )
         {
             return "";
         }
-        else if(cellList.size() > 0)
+        else if( cellList.size() > 0 )
         {
             return (cellList.get(0)).getRadioType();
         }
         return "";
     }
 
-    public int getCellPSC(){
-        if(currentScannedType != Global.SCANNED_TYPE_CELL)
+    public int getCellPSC()
+    {
+        if( currentScannedType != Config.SCANNED_TYPE_CELL )
         {
             return 0;
         }
-        else if(cellList.size() > 0)
+        else if( cellList.size() > 0 )
         {
             return (cellList.get(0)).getPsc();
         }
         return 0;
     }
 
-    public String getWifiSsid(){
-        if(currentScannedType != Global.SCANNED_TYPE_WIFI)
-        {
-            return "";
-        }
-        else if(wifiList.size() > 0)
-        {
-            return (wifiList.get(0)).getSsid();
-        }
-        return "";
-    }
 
-    // get mac address if the current scanned type is wifi, return empty
-    // string if the current scanned type is not wifi and the wifi list
-    // is empty
-    public String getMacAddress(){
-        if(currentScannedType != Global.SCANNED_TYPE_WIFI)
-        {
-            return "";
-        }
-        else if(wifiList.size() > 0)
-        {
-            return (wifiList.get(0)).getBssid();
-        }
-        return "";
-    }
 
     // get datetime of the current scanned type, return empty string if the current scanned type
     // list is empty
-    public String getDateTime(){
-        if(currentScannedType == Global.SCANNED_TYPE_CELL && cellList.size() > 0)
+    public String getDateTime()
+    {
+        if( currentScannedType == Config.SCANNED_TYPE_CELL && cellList.size() > 0 )
         {
             return cellList.get(0).getDatetime();
-        }
-        else if(currentScannedType == Global.SCANNED_TYPE_WIFI && wifiList.size() > 0)
-        {
-            return wifiList.get(0).getDatetime();
         }
         return "";
     }
 
-    public LatLng getCenter(){
+    public LatLng getCenter()
+    {
         return center;
     }
 
     // calculate the center point of multiple geo points on earth
-    public void calculateCenter(){
+    public void calculateCenter()
+    {
         ArrayList<LatLng> points = new ArrayList<>();
 
-        if(currentScannedType == Global.SCANNED_TYPE_CELL)
+        if( currentScannedType == Config.SCANNED_TYPE_CELL )
         {
-            for(Cell cell : cellList)
+            for( Cell cell : cellList )
             {
                 LatLng point = new LatLng(cell.getMeasuredLocation().getLatitude(), cell.getMeasuredLocation().getLongitude());
                 points.add(point);
             }
         }
-        else if(currentScannedType == Global.SCANNED_TYPE_WIFI)
-        {
-            for(Wifi wifi : wifiList)
-            {
-                LatLng point = new LatLng(wifi.getMeasuredLocation().getLatitude(), wifi.getMeasuredLocation().getLongitude());
-                points.add(point);
-            }
-        }
-
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         int size = points.size();
-        for(int i = 0; i < size; i++)
+        for( int i = 0; i < size; i++ )
         {
             builder.include(points.get(i));
             pointIncluded = true;
         }
 
-        if(pointIncluded)
+        if( pointIncluded )
         {
             radioBound = builder.build();
             center = radioBound.getCenter();
@@ -304,22 +250,25 @@ public class CellCalculation
 
     }
 
-    public LatLngBounds getCenterBound(){
+    public LatLngBounds getCenterBound()
+    {
         return radioBound;
     }
 
-    private void setCenterMarkerOptions( LatLng center){
-        if(currentScannedType == Global.SCANNED_TYPE_CELL)
+    private void setCenterMarkerOptions( LatLng center )
+    {
+        if( currentScannedType == Config.SCANNED_TYPE_CELL )
         {
-            clusteredMarker = new ClusteredCenterMarker(center, getCellReference(), Global.SCANNED_TYPE_CELL);
+            clusteredMarker = new ClusteredCenterMarker(center, getCellReference(), Config.SCANNED_TYPE_CELL);
         }
         else
         {
-            clusteredMarker = new ClusteredCenterMarker(center, getWifiSsid(), Global.SCANNED_TYPE_WIFI);
+            clusteredMarker = new ClusteredCenterMarker(center, getWifiSsid(), Config.SCANNED_TYPE_WIFI);
         }
     }
 
-    public ClusteredCenterMarker getClusteredMarker(){
+    public ClusteredCenterMarker getClusteredMarker()
+    {
         return this.clusteredMarker;
     }
 
@@ -336,33 +285,39 @@ public class CellCalculation
 
     // Start Google Components
 
-    public void setLocationPolyline( Polyline polyline){
+    public void setLocationPolyline( Polyline polyline )
+    {
         this.loctionPolyline = polyline;
     }
 
-    public void setLocationPolylineOsm( PathOverlay pathOverlay){
+    public void setLocationPolylineOsm( PathOverlay pathOverlay )
+    {
         this.locationPolylineOsm = pathOverlay;
     }
 
-    public PathOverlay getLocationPolylineOsm(){
+    public PathOverlay getLocationPolylineOsm()
+    {
         return locationPolylineOsm;
     }
 
-    public void removeLocationPolyline(){
-        if(loctionPolyline != null)
+    public void removeLocationPolyline()
+    {
+        if( loctionPolyline != null )
         {
             loctionPolyline.remove();
         }
     }
 
-    public void addLocationCenterIconListMarker( Marker marker){
+    public void addLocationCenterIconListMarker( Marker marker )
+    {
         locationCenterIconListMarker.add(marker);
     }
 
-    public void removeLocationCenterIconListMarkers(){
+    public void removeLocationCenterIconListMarkers()
+    {
         Iterator<Marker> locationCenterIconListMarkerIterator = locationCenterIconListMarker.iterator();
         Marker currentMarker;
-        while(locationCenterIconListMarkerIterator.hasNext())
+        while ( locationCenterIconListMarkerIterator.hasNext() )
         {
             currentMarker = locationCenterIconListMarkerIterator.next();
             currentMarker.remove();
@@ -379,14 +334,16 @@ public class CellCalculation
         locationCenterIconListMarkerOsm.add(marker);
     }
 
-    public void addLocationListMarker( Circle circle){
+    public void addLocationListMarker( Circle circle )
+    {
         locationListMarker.add(circle);
     }
 
-    public void removeLocationListMarkers(){
+    public void removeLocationListMarkers()
+    {
         Iterator<Circle> locationListMarkerIterator = locationListMarker.iterator();
         Circle currentCircle;
-        while(locationListMarkerIterator.hasNext())
+        while ( locationListMarkerIterator.hasNext() )
         {
             currentCircle = locationListMarkerIterator.next();
             currentCircle.remove();
@@ -403,7 +360,8 @@ public class CellCalculation
         return locationListMarkerOsm;
     }
 
-    public void addCircle( Circle circle){
+    public void addCircle( Circle circle )
+    {
         cellListMarker.add(circle);
     }
 
@@ -417,19 +375,21 @@ public class CellCalculation
         cellListMarkerOsm.add(circle);
     }
 
-    public void removeCellListMarkers(){
+    public void removeCellListMarkers()
+    {
         Iterator<Circle> cellListMarkerIterator = cellListMarker.iterator();
         Circle currentCircle;
 
-        while(cellListMarkerIterator.hasNext())
+        while ( cellListMarkerIterator.hasNext() )
         {
             currentCircle = cellListMarkerIterator.next();
             currentCircle.remove();
         }
     }
 
-    public PolygonOptions getCenterPolygonOptions( int color, int outline){
-        if(null == northEast || null == southWest)
+    public PolygonOptions getCenterPolygonOptions( int color, int outline )
+    {
+        if( null == northEast || null == southWest )
         {
             return null;
         }
@@ -458,8 +418,9 @@ public class CellCalculation
         return Utility.getEllipseForGoogleMap(center, rectWidth / 1000, rectHeight / 1000, rotation, 200, color, outline);
     }
 
-    public org.osmdroid.views.overlay.Polygon getCenterPolygonOptionsOsm( Context context, int color, int outline){
-        if(null == northEast || null == southWest)
+    public org.osmdroid.views.overlay.Polygon getCenterPolygonOptionsOsm( Context context, int color, int outline )
+    {
+        if( null == northEast || null == southWest )
         {
             return null;
         }
@@ -491,7 +452,8 @@ public class CellCalculation
         return Utility.getEllipseForOSMMap(center, rectWidth / 1000, rectHeight / 1000, rotation, 200, context, color, outline);
     }
 
-    public void setCenterPolygon( Polygon polygon){
+    public void setCenterPolygon( Polygon polygon )
+    {
         this.centerPolygon = polygon;
     }
 
@@ -505,7 +467,8 @@ public class CellCalculation
         this.centerPolygonOsm = polygon;
     }
 
-    public void removeCenterPolygon(){
+    public void removeCenterPolygon()
+    {
         this.centerPolygon.remove();
     }
 
@@ -552,19 +515,23 @@ public class CellCalculation
 
     }
 
-    public void setPolyline( Polygon polygon){
+    public void setPolyline( Polygon polygon )
+    {
         this.convexHull = polygon;
     }
 
-    public PathOverlay getConvexHullOsm(){
+    public PathOverlay getConvexHullOsm()
+    {
         return this.convexHullOsm;
     }
 
-    public void setPolylineOsm( PathOverlay convexHullOsm){
+    public void setPolylineOsm( PathOverlay convexHullOsm )
+    {
         this.convexHullOsm = convexHullOsm;
     }
 
-    public void removeConvexHull(){
+    public void removeConvexHull()
+    {
         convexHull.remove();
     }
 

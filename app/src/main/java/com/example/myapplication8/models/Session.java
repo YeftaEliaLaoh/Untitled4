@@ -5,7 +5,10 @@ import android.os.Parcelable;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import java.util.ArrayList;
 
 @Entity
 public class Session implements Parcelable
@@ -20,14 +23,14 @@ public class Session implements Parcelable
     private long dateTime;
     @ColumnInfo(name = "exportId")
     private long exportId;
-
-    public static final int IDLE = 0;
-    public static final int SENT = 1;
-    public static final int EXPORTED = 2;
+    @Ignore
+    private ArrayList<Cell> cellList;
+    @Ignore
+    private ArrayList<MeasuredLocation> locationList;
 
     public Session()
     {
-        //cellList = new ArrayList<>();
+        cellList = new ArrayList<>();
     }
 
     public Session( Parcel parcel )
@@ -66,15 +69,25 @@ public class Session implements Parcelable
         this.exportId = exportId;
     }
 
-/*    public ArrayList<Cell> getCellList()
+    public ArrayList<Cell> getCellList()
     {
         return cellList;
     }
 
-    public void setCellList(ArrayList<Cell> cellList)
+    public void setCellList( ArrayList<Cell> cellList )
     {
         this.cellList = cellList;
-    }*/
+    }
+
+    public ArrayList<MeasuredLocation> getLocationList()
+    {
+        return locationList;
+    }
+
+    public void setLocationList( ArrayList<MeasuredLocation> locationList )
+    {
+        this.locationList = locationList;
+    }
 
     public String getPartFile()
     {
@@ -118,7 +131,7 @@ public class Session implements Parcelable
         this.cellCount = cellCount;
     }
 
-    public static final Creator<Session> CREATOR = new Creator<Session>()
+    public static final Parcelable.Creator<Session> CREATOR = new Creator<Session>()
     {
 
         public Session createFromParcel( Parcel source )

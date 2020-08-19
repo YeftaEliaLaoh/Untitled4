@@ -96,6 +96,32 @@ public class Utility
         return calendar.getTimeInMillis();
     }
 
+    public static int getMax( int[] array )
+    {
+        int max = Integer.MIN_VALUE;
+        for( int value : array )
+        {
+            if( value > max )
+            {
+                max = value;
+            }
+        }
+        return max;
+    }
+
+    public static int getMin( int[] array )
+    {
+        int min = Integer.MAX_VALUE;
+        for( int value : array )
+        {
+            if( value < min )
+            {
+                min = value;
+            }
+        }
+        return min;
+    }
+
     public static String generateChecksum( String dateOfImport, int filePart ) throws NoSuchAlgorithmException
     {
         String plainText = filePart + "|" + dateOfImport;
@@ -135,23 +161,6 @@ public class Utility
         return lByteArray;
     }
 
-    public static void updateTextview( TextView textview, String textContent )
-    {
-        textview.setTypeface(Typeface.DEFAULT);
-        textview.setTextColor(Color.BLACK);
-        textview.setText(textContent);
-        textview.setTextSize(10);
-    }
-
-    public static void updateTextviewNotAvailable( TextView textview, String textContent )
-    {
-        textview.setTextColor(Color.parseColor("#CDCDCD"));
-        textview.setTypeface(textview.getTypeface(), Typeface.ITALIC);
-        textview.setText(textContent);
-        textview.setTextSize(10);
-    }
-
-    // For Map Calculation
 
     public static double deg2Rad( double degree )
     {
