@@ -23,7 +23,6 @@ import com.example.myapplication8.models.Cell;
 import com.example.myapplication8.models.ItemSession;
 import com.example.myapplication8.models.ListviewItem;
 import com.example.myapplication8.models.MapSingleton;
-import com.example.myapplication8.models.MeasuredLocation;
 import com.example.myapplication8.models.Session;
 import com.example.myapplication8.models.SessionSingleton;
 import com.example.myapplication8.utilities.Config;
@@ -33,7 +32,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 public class LeftSessionController
 {
@@ -78,7 +76,7 @@ public class LeftSessionController
     {
         mListView.setCacheColorHint(Color.WHITE);
         mListView.requestFocus(0);
-        mListView.setAdapter(fragment.adapter);
+        mListView.setAdapter(fragment.listviewAdapter);
         mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
@@ -229,7 +227,7 @@ public class LeftSessionController
 
         updateCount(selectedCount);
         isLongPressedAllowed = selectedCount == 0;
-        fragment.adapter.notifyDataSetChanged();
+        fragment.listviewAdapter.notifyDataSetChanged();
     }
 
     // get the number of selected item from the list
@@ -285,7 +283,7 @@ public class LeftSessionController
         //end issue
         mButtonImport.setVisibility(View.GONE);
 
-        fragment.adapter.notifyDataSetChanged();
+        fragment.listviewAdapter.notifyDataSetChanged();
     }
     //end issue
 
@@ -304,7 +302,7 @@ public class LeftSessionController
 
         mButtonImport.setEnabled(true);
 
-        fragment.adapter.notifyDataSetChanged();
+        fragment.listviewAdapter.notifyDataSetChanged();
         updateCount(0);
     }
 

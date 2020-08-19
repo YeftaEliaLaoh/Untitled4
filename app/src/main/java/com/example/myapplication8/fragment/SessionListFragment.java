@@ -26,7 +26,7 @@ public class SessionListFragment extends Fragment
         ListviewItem.addTypeCount(ItemSession.class);
     }
 
-    public ListviewAdapter adapter;
+    public ListviewAdapter listviewAdapter;
     public View view;
     public ArrayList<ListviewItem> data = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class SessionListFragment extends Fragment
         if( view == null )
         {
             view = inflater.inflate(R.layout.layout_sesion_fragment, container, false);
-            adapter = new ListviewAdapter(this.getActivity(), 0, data);
+            listviewAdapter = new ListviewAdapter(this.getActivity(), 0, data);
             sessionList = new ArrayList<>();
             init();
         }
@@ -79,7 +79,7 @@ public class SessionListFragment extends Fragment
         ItemSession item = new ItemSession(session);
         sessionList.add(session);
         data.add(item);
-        adapter.notifyDataSetChanged();
+        listviewAdapter.notifyDataSetChanged();
     }
 
     // add new session to the top of the listview
@@ -90,7 +90,7 @@ public class SessionListFragment extends Fragment
 
         sessionList.add(firstIndex, session);
         data.add(firstIndex, item);
-        adapter.notifyDataSetChanged();
+        listviewAdapter.notifyDataSetChanged();
     }
 
     public boolean isExistingSessionCountUpdated( Session session )
@@ -101,7 +101,7 @@ public class SessionListFragment extends Fragment
         if( indexFound > -1 )
         {
             sessionList.get(indexFound).setCellCount(session.getCellCount());
-            adapter.notifyDataSetChanged();
+            listviewAdapter.notifyDataSetChanged();
 
             return true;
         }
@@ -117,7 +117,7 @@ public class SessionListFragment extends Fragment
         {
             sessionList.remove(index);
             data.remove(index);
-            adapter.notifyDataSetChanged();
+            listviewAdapter.notifyDataSetChanged();
         }
     }
     //issue 8442
@@ -159,7 +159,7 @@ public class SessionListFragment extends Fragment
 
     public void refreshList()
     {
-        adapter.notifyDataSetChanged();
+        listviewAdapter.notifyDataSetChanged();
     }
 
     public List<Session> getSessionList()

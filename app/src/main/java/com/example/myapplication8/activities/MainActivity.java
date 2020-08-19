@@ -30,6 +30,8 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {
@@ -41,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int selectedMapType = 0;
     private MapController mapController;
     private LeftPaneController leftPaneController;
-    public AsyncTask<Void, Session, ArrayList<Session>> sessionAsyncTask;
     private SessionListFragment sessionListFragment;
 
     public AppDatabase getAppDatabase()
@@ -71,47 +72,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onPause()
     {
         super.onPause();
-        if( sessionAsyncTask != null )
-        {
-            sessionAsyncTask.cancel(false);
-        }
     }
 
     private void populateSessions()
     {
         leftPaneController.getTextEmptyList().setVisibility(View.GONE);
-        sessionAsyncTask = new AsyncTask<Void, Session, ArrayList<Session>>()
+
+        final ArrayList<Session> sessionList = (ArrayList<Session>) appDatabase.sessionDao().getAll();
+        for( Session session : sessionList )
         {
+            sessionListFragment.addSession(session);
+        }
 
-            @Override
-            protected ArrayList<Session> doInBackground( Void... params )
-            {
-                ArrayList<Session> sessionList = (ArrayList<Session>) appDatabase.sessionDao().getAll();
-                for( Session session : sessionList )
-                {
-                    publishProgress(session);
-                }
-
-                return sessionList;
-            }
-
-            @Override
-            protected void onProgressUpdate( Session... session )
-            {
-                sessionListFragment.addSession(session[0]);
-            }
-
-            @Override
-            protected void onPostExecute( ArrayList<Session> result )
-            {
-                if( result.size() < 1 )
-                {
-                    leftPaneController.getTextEmptyList().setVisibility(View.VISIBLE);
-                    leftPaneController.getTextEmptyList().setText(getString(R.string.label_no_session));
-                }
-            }
-        };
-        sessionAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void initLayout()
@@ -138,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         appDatabase = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "database-name"
-        ).allowMainThreadQueries().build();
+        ).allowMainThreadQueries().fallbackToDestructiveMigration().build();
     }
 
     private void initEvent()

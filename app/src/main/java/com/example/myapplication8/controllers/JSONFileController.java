@@ -36,24 +36,13 @@ import java.util.Map;
 public class JSONFileController
 {
 
-    private MainActivity activity;
+    private MainActivity mainActivity;
     private AppDatabase appDatabase;
 
-    private boolean isExportDone;
-    private Session processedSession;
-
-    private long radioCounter = 0;
-
-    /**
-     * Constructor
-     *
-     * @param activity app activity;
-     */
-    public JSONFileController( MainActivity activity )
+    public JSONFileController( MainActivity mainActivity )
     {
-
-        this.activity = activity;
-
+        this.mainActivity = mainActivity;
+        appDatabase = mainActivity.getAppDatabase();
     }
 
     public int read( File readFile, LeftSessionController.ImportJSONAsync importJSONAsync ) throws IOException
