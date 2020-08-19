@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         RadioGroup switcher = layout.findViewById(R.id.radioSwitcher);
 
         //set button map
-        if( selectedMapType == Config.GOOGLEMAP )
+        if( selectedMapType == Config.GOOGLE_MAP )
         {
             switcher.check(R.id.googlemap);
         }
@@ -181,11 +181,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 if( checkedId == R.id.googlemap )
                 {
-                    selectedMapType = Config.GOOGLEMAP;
+                    selectedMapType = Config.GOOGLE_MAP;
                 }
                 else
                 {
-                    selectedMapType = Config.OPENSTREETMAP;
+                    selectedMapType = Config.OPEN_STREET_MAP;
                 }
                 replaceTiles();
             }
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void replaceTiles()
     {
-        if( selectedMapType == Config.OPENSTREETMAP )
+        if( selectedMapType == Config.OPEN_STREET_MAP )
         {
             showOsmMap();
         }
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void showGoogleMap()
     {
         hideOsmMap();
-        MapSingleton.getInstance().setSelectedMap(Config.GOOGLEMAP);
+        MapSingleton.getInstance().setSelectedMap(Config.GOOGLE_MAP);
         supportMapFragment.getView().setVisibility(View.VISIBLE);
         if( googleMap != null )
         {

@@ -1,8 +1,10 @@
 package com.example.myapplication8.daos;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.example.myapplication8.models.Cell;
 import com.example.myapplication8.models.Session;
 
 import java.util.List;
@@ -15,4 +17,8 @@ public interface SessionDao
 
     @Query("DELETE FROM Session WHERE id = :id;")
     void deleteById( long id );
+
+    @Insert
+    long insertNewEntry( Session session );
+
 }

@@ -96,31 +96,32 @@ public class Utility
         return calendar.getTimeInMillis();
     }
 
-    public static int getMax( int[] array )
+    public static String generateChecksum( String dateOfImport, int filePart ) throws NoSuchAlgorithmException
     {
-        int max = Integer.MIN_VALUE;
-        for( int value : array )
-        {
-            if( value > max )
-            {
-                max = value;
-            }
-        }
-        return max;
+        String plainText = filePart + "|" + dateOfImport;
 
-    }
+        MessageDigest md = MessageDigest.getInstance(Config.HASHING_METHOD);
+        md.update(plainText.getBytes());
 
-    public static int getMin( int[] array )
-    {
-        int min = Integer.MAX_VALUE;
-        for( int value : array )
+        byte[] byteData = md.digest();
+
+        StringBuffer sb = new StringBuffer();
+        for( byte datum : byteData )
         {
-            if( value < min )
-            {
-                min = value;
-            }
+            sb.append(Integer.toString((datum & 0xff) + 0x100, 16).substring(1));
         }
-        return min;
+
+        StringBuffer hexString = new StringBuffer();
+        for( byte byteDatum : byteData )
+        {
+            String hex = Integer.toHexString(0xff & byteDatum);
+            if( hex.length() == 1 )
+                hexString.append('0');
+            hexString.append(hex);
+        }
+
+        return hexString.toString();
+
     }
 
     public static byte[] convertByteArrayP( int p_int )

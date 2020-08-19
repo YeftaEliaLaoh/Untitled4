@@ -7,13 +7,11 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.ArrayList;
-
 @Entity
 public class Session implements Parcelable
 {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     @ColumnInfo(name = "cellCount")
     private int cellCount;
     @ColumnInfo(name = "partFile")
@@ -37,12 +35,12 @@ public class Session implements Parcelable
         readFromParcel(parcel);
     }
 
-    public int getId()
+    public long getId()
     {
         return id;
     }
 
-    public void setId( int id )
+    public void setId( long id )
     {
         this.id = id;
     }
@@ -98,7 +96,7 @@ public class Session implements Parcelable
     @Override
     public void writeToParcel( Parcel parcel, int flags )
     {
-        parcel.writeInt(id);
+        parcel.writeLong(id);
         parcel.writeLong(dateTime);
         parcel.writeInt(cellCount);
     }

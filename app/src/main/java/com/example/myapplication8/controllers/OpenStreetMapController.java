@@ -53,7 +53,7 @@ public class OpenStreetMapController
     {
         mapView.setMinZoomLevel((double) 3);
         mapView.setMaxZoomLevel((double) 22);
-        MapSingleton.getInstance().setSelectedMap(Config.OPENSTREETMAP);
+        MapSingleton.getInstance().setSelectedMap(Config.OPEN_STREET_MAP);
         mapView.setVisibility(View.VISIBLE);
     }
 

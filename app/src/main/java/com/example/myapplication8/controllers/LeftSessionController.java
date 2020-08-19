@@ -385,27 +385,6 @@ public class LeftSessionController
         }
     }
 
-    /**
-     * Validate session list, Prevent selected session data is empty
-     *
-     * @return boolean {@true} valid session data {@false} otherwise
-     */
-    private boolean validateExportSendData()
-    {
-        for( Session session : selectedSession )
-        {
-            ArrayList<Cell> cellList = (ArrayList<Cell>) mainActivity.getAppDatabase().cellDao().getAllBySessionId(session.getId());
-            ArrayList<MeasuredLocation> locationList = (ArrayList<MeasuredLocation>) mainActivity.getAppDatabase().locationDao().getAllBySessionId(session.getId());
-
-            if( cellList.size() <= 0 && locationList.size() <= 0 )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 
     /**
      * Check the export id was existed or not
@@ -534,7 +513,7 @@ public class LeftSessionController
         if( sessionList.size() > 0 )
         {
             //set cellHashMap and wifiHashMap
-            int sessionId = sessionList.get(0).getId();
+            long sessionId = sessionList.get(0).getId();
             SessionSingleton.getInstance().setCellHashMap(getExistingCellHashMap(sessionId));
         }
     }
@@ -546,7 +525,7 @@ public class LeftSessionController
      * @param sessionId the active sessionId
      * @return
      */
-    private HashMap getExistingCellHashMap( int sessionId )
+    private HashMap getExistingCellHashMap( long sessionId )
     {
         HashMap cellHashMap = new HashMap();
         List<Cell> cellList = mainActivity.getAppDatabase().cellDao().getAllBySessionId(sessionId);
@@ -600,7 +579,7 @@ public class LeftSessionController
 
             try
             {
-                //status = new JSONFileController(mainActivity).read(processedFile, this);
+                status = new JSONFileController(mainActivity).read(processedFile, this);
             }
             catch ( Exception e )
             {

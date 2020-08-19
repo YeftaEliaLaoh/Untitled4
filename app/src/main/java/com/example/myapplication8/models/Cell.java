@@ -5,12 +5,12 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Cell
+public class Cell extends Radio
 {
     @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo(name = "sessionId")
-    private String sessionId;
+    private int sessionId;
     @ColumnInfo(name = "cellReference")
     private String cellReference;
     @ColumnInfo(name = "psc")
@@ -25,6 +25,8 @@ public class Cell
     private int lac;
     @ColumnInfo(name = "radioType")
     private String radioType;
+    @ColumnInfo(name = "locationId")
+    private long locationId;
 
     public int getId()
     {
@@ -36,12 +38,12 @@ public class Cell
         this.id = id;
     }
 
-    public String getSessionId()
+    public int getSessionId()
     {
         return sessionId;
     }
 
-    public void setSessionId( String sessionId )
+    public void setSessionId( int sessionId )
     {
         this.sessionId = sessionId;
     }
@@ -116,4 +118,13 @@ public class Cell
         this.radioType = radioType;
     }
 
+    public long getLocationId()
+    {
+        return locationId;
+    }
+
+    public void setLocationId( long locationId )
+    {
+        this.locationId = locationId;
+    }
 }
