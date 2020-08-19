@@ -1,4 +1,4 @@
-package com.example.myapplication8.fragment;
+package com.example.myapplication8.fragments;
 
 import android.content.Context;
 import android.os.Bundle;

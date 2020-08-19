@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,7 +15,7 @@ import com.example.myapplication8.R;
 import com.example.myapplication8.controllers.LeftPaneController;
 import com.example.myapplication8.controllers.MapController;
 import com.example.myapplication8.databases.AppDatabase;
-import com.example.myapplication8.fragment.SessionListFragment;
+import com.example.myapplication8.fragments.SessionListFragment;
 import com.example.myapplication8.models.MapSingleton;
 import com.example.myapplication8.models.Session;
 import com.example.myapplication8.utilities.Config;
@@ -30,8 +29,6 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback
 {

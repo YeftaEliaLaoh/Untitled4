@@ -18,7 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.myapplication8.R;
 import com.example.myapplication8.activities.MainActivity;
-import com.example.myapplication8.fragment.SessionListFragment;
+import com.example.myapplication8.fragments.SessionListFragment;
 import com.example.myapplication8.models.Cell;
 import com.example.myapplication8.models.ItemSession;
 import com.example.myapplication8.models.ListviewItem;
@@ -443,8 +443,8 @@ public class LeftSessionController
         // Change textview 'Session List' to 'Scan Result'
         ((TextView) fragment.getActivity().findViewById(R.id.text_header_title_layout_main_left)).setText(fragment.getActivity().getString(R.string.label_scan_result_title));
 
-        //fm.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, scannedListFragment, Config.SCAN_FRAGMENT).commit();
-        //((MainActivity) fragment.getActivity()).getLeftPaneController().getButtonArrowBack().setVisibility(View.VISIBLE);
+        fm.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, scannedListFragment, Config.SCAN_FRAGMENT).commit();
+        ((MainActivity) fragment.getActivity()).getLeftPaneController().getButtonArrowBack().setVisibility(View.VISIBLE);
     }
 
     /**
