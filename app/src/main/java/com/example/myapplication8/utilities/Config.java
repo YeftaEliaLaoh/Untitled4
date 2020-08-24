@@ -1,6 +1,7 @@
 package com.example.myapplication8.utilities;
 
 import android.Manifest;
+import android.graphics.Color;
 
 public class Config
 {
@@ -65,5 +66,12 @@ public class Config
     public static final String DATE_TIME_KEY = "date_time";
     public static final int RESULTS_LOADER_LIMIT = 5;
     public static final String TAG_FILE_ID = "tag";
+
+    public static final int DEFAULT_COLOR_RADIO_CELL_OUTLINE = Color.BLACK;
+
+    public static final int DEFAULT_COLOR_RADIO_CELL_MEASURED = Color.argb(120, 53, 214, 0); //green
+    public static final int DEFAULT_COLOR_RADIO_CELL_CALCULATED_CENTER = Color.argb(120, 67, 144, 233); //blue
+    public static final int DEFAULT_COLOR_RADIO_CELL_AREA_POLYGON = Color.argb(120, 233, 67, 76); //red
+
 
 }

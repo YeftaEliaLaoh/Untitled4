@@ -22,6 +22,7 @@ import com.example.myapplication8.models.CellCalculation;
 import com.example.myapplication8.models.ItemCellCalculation;
 import com.example.myapplication8.models.ListviewAdapter;
 import com.example.myapplication8.models.ListviewItem;
+import com.example.myapplication8.models.MapSingleton;
 import com.example.myapplication8.models.MeasuredLocation;
 import com.example.myapplication8.models.MeasuredLocationAndCell;
 import com.example.myapplication8.models.Session;
@@ -268,8 +269,8 @@ public class ScannedListFragment extends Fragment
         @Override
         protected Void doInBackground( Cell... cell )
         {
-            CellCalculation cellCalculation = new CellCalculation(Global.SCANNED_TYPE_CELL);
-            cellCalculation = mActivity.getCellTable().getByCellRefAndSessionId(cellCalculation, session.getId(), cell[0].getCellReference());
+            CellCalculation cellCalculation = new CellCalculation(Config.SCANNED_TYPE_CELL);
+            List<MeasuredLocationAndCell> measuredLocationAndCells = mainActivity.getAppDatabase().cellDao().getByCellRefAndSessionId(session.getId(), cell[0].getCellReference());
 
             cellCalculation.calculateCenter();
             publishProgress(cellCalculation);
@@ -285,10 +286,10 @@ public class ScannedListFragment extends Fragment
             new CellLocationAsyncTask().executeOnExecutor(THREAD_POOL_EXECUTOR, cellCalculations[0].getCellList());
 
             // Draw the cells
-            if( !profileSingleton.getOverviewCell().getRadioNumber().isShowing() || selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
-            {
-                mActivity.getMapWrapper().drawRadioBasedOnProfile(cellCalculations[0], profileSingleton.getOverviewCell(), Global.SCANNED_TYPE_CELL);
-            }
+//            if( !profileSingleton.getOverviewCell().getRadioNumber().isShowing() || selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
+//            {
+            mainActivity.getMapController().drawRadioBasedOnProfile(cellCalculations[0], Config.SCANNED_TYPE_CELL);
+//            }
 
 
             if( !selectionOnClear )
@@ -314,9 +315,9 @@ public class ScannedListFragment extends Fragment
                     addCellToRadioList = true;
                 }
 
-                if( mActivity.getLeftPaneController().getTextEmptyList().getVisibility() == View.VISIBLE )
+                if( mainActivity.getLeftPaneController().getTextEmptyList().getVisibility() == View.VISIBLE )
                 {
-                    mActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.INVISIBLE);
+                    mainActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.INVISIBLE);
                 }
             }
         }
@@ -324,18 +325,18 @@ public class ScannedListFragment extends Fragment
         @Override
         protected void onPostExecute( Void params )
         {
-            if( mData.size() < 1 )
+            /*if( mData.size() < 1 )
             {
-                mActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.VISIBLE);
-                mActivity.getLeftPaneController().getTextEmptyList().setText("There is no scan result");
+                mainActivity.getLeftPaneController().getTextEmptyList().setVisibility(View.VISIBLE);
+                mainActivity.getLeftPaneController().getTextEmptyList().setText("There is no scan result");
             }
             else
             {
-                if( MapSingleton.getInstance().getSelectedMap() == Global.OPENSTREETMAP && selectedCell == session.getCellList().size() )
+                if( MapSingleton.getInstance().getSelectedMap() == Config.OPENSTREETMAP && selectedCell == session.getCellList().size() )
                 {
-                    mActivity.getMapWrapper().drawClusterOsmOnMap();
+                    mainActivity.getMapWrapper().drawClusterOsmOnMap();
                 }
-            }
+            }*/
         }
     }
 

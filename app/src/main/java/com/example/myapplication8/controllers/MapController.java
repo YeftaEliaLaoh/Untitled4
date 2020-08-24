@@ -3,11 +3,14 @@ package com.example.myapplication8.controllers;
 import android.content.Context;
 import android.location.Location;
 
+import com.example.myapplication8.models.Cell;
+import com.example.myapplication8.models.CellCalculation;
 import com.example.myapplication8.models.MapSingleton;
 import com.example.myapplication8.utilities.Config;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.clustering.ClusterManager;
 
@@ -22,6 +25,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MapController
@@ -135,6 +139,34 @@ public class MapController
         {
             openStreetMapController.clear();
             openStreetMapController.clearClusterItem();
+        }
+    }
+
+    // Radio drawing section
+    private void drawCellOnMap( CellCalculation calculation )
+    {
+        ArrayList<Cell> cellList = calculation.getCellList();
+        Iterator<Cell> cellIterator = cellList.iterator();
+        Cell currentCell;
+        double radius;
+
+        while ( cellIterator.hasNext() )
+        {
+            currentCell = cellIterator.next();
+            radius = currentCell.getSignalStrength();
+
+            radius = radius + 103;
+            currentCell.setAccuracy(radius);
+
+            if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP )
+            {
+                calculation.addCircleOsm(openStreetMapController.addColorToArea(currentCell.getLatitude(), currentCell.getLongitude(), radius, Config.DEFAULT_COLOR_RADIO_CELL_MEASURED, Config.DEFAULT_COLOR_RADIO_CELL_OUTLINE));
+            }
+            else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
+            {
+                calculation.addCircle(googleMapController.addColorToAreaWithType(currentCell.getLatitude(), currentCell.getLongitude(), radius, Config.DEFAULT_COLOR_RADIO_CELL_MEASURED, Config.DEFAULT_COLOR_RADIO_CELL_OUTLINE));
+            }
+
         }
     }
 
@@ -259,6 +291,62 @@ public class MapController
         }
     };
 
+    public void drawRadioBasedOnProfile( CellCalculation cellCalculation, int radioType )
+    {
+
+        if( radioType == Config.SCANNED_TYPE_CELL )
+        {
+            drawCellOnMap(cellCalculation);
+        }
+
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
+        {
+            if( cellCalculation.getClusteredMarker().getType() == Config.SCANNED_TYPE_CELL )
+            {
+                googleMapController.addClusterItem(cellCalculation.getClusteredMarker());
+            }
+
+        }
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP )
+        {
+            Marker markerOsm = openStreetMapController.addItemMarker(cellCalculation.getClusteredMarker());
+            cellCalculation.setCenterMarkerOptionsOsm(markerOsm);
+            openStreetMapController.addListClusterMarker(markerOsm);
+
+        }
+
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
+        {
+            PolygonOptions po = cellCalculation.getCenterPolygonOptions(Config.DEFAULT_COLOR_RADIO_CELL_CALCULATED_CENTER, Config.DEFAULT_COLOR_RADIO_CELL_OUTLINE);
+            if( po != null )
+            {
+                cellCalculation.setCenterPolygon(googleMapController.drawPolygonOnMap(po));
+            }
+        }
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP )
+        {
+            org.osmdroid.views.overlay.Polygon centerPolygonOsm = cellCalculation.getCenterPolygonOptionsOsm(openStreetMapController.getContext(), Config.DEFAULT_COLOR_RADIO_CELL_CALCULATED_CENTER, Config.DEFAULT_COLOR_RADIO_CELL_OUTLINE);
+            cellCalculation.setCenterPolygonOsm(centerPolygonOsm);
+            openStreetMapController.drawOnOsmMap(centerPolygonOsm);
+        }
+
+
+        if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
+        {
+            PolygonOptions po = cellCalculation.setHullPolylineOptions(Config.DEFAULT_COLOR_RADIO_CELL_AREA_POLYGON, Config.DEFAULT_COLOR_RADIO_CELL_OUTLINE);
+            if( po != null && po.getPoints().size() > 0 )
+            {
+                cellCalculation.setPolyline(googleMapController.drawPolygonOnMap(po));
+            }
+        }
+        else if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP )
+
+        {
+            Polyline polyline = cellCalculation.getHullPolylineOptionsOsm(openStreetMapController.getContext(), Config.DEFAULT_COLOR_RADIO_CELL_AREA_POLYGON);
+            cellCalculation.setPolylineOsm(openStreetMapController.addPolyline(polyline));
+        }
+
+    }
 
     private void resetLocationMarker()
     {

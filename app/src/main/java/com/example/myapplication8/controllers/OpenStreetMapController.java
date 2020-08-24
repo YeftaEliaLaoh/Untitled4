@@ -49,6 +49,11 @@ public class OpenStreetMapController
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
     }
 
+    public Context getContext()
+    {
+        return mapView.getContext();
+    }
+
     public void showDetailsOsmMap()
     {
         mapView.setMinZoomLevel((double) 3);
