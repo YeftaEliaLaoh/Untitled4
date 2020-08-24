@@ -19,7 +19,8 @@ public class DialogProgressController
     private int progress = -1;
     private int label;
 
-    public DialogProgressController( Context context, int label, int max){
+    public DialogProgressController( Context context, int label, int max )
+    {
         this.context = context;
         this.label = label;
         dialog = new Dialog(context);
@@ -33,13 +34,13 @@ public class DialogProgressController
         updateProgressDialog();
     }
 
-    private void initLayout(){
-
+    private void initLayout()
+    {
         progressBar = dialog.findViewById(R.id.dialog_progress);
         textView = dialog.findViewById(R.id.dialog_txt_progress);
         TextView headerTitle = dialog.findViewById(R.id.deviceInfo_text_header_title);
 
-        if(label != R.string.label_exporting)
+        if( label != R.string.label_exporting )
         {
             headerTitle.setText(context.getString(R.string.label_header_importing));
         }
@@ -50,15 +51,16 @@ public class DialogProgressController
 
     }
 
-    public void showDialog(){
+    public void showDialog()
+    {
         dialog.show();
     }
 
-    public void updateProgressDialog(){
-
+    public void updateProgressDialog()
+    {
         String extraMessage;
 
-        if(label != R.string.label_exporting)
+        if( label != R.string.label_exporting )
         {
             progress++;
             progressBar.setProgress(progress);
@@ -73,12 +75,14 @@ public class DialogProgressController
 
     }
 
-    public void setProgressMax(int max){
+    public void setProgressMax( int max )
+    {
         progressBar.setMax(max);
         this.max = max;
     }
 
-    public void dismissProgress(){
+    public void dismissProgress()
+    {
         dialog.dismiss();
     }
 }

@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LeftPaneController leftPaneController;
     private SessionListFragment sessionListFragment;
 
-
     public MapController getMapController()
     {
         return mapController;
@@ -101,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
             sessionListFragment.addSession(session);
         }
-
     }
 
     private void initLayout()

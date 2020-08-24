@@ -44,8 +44,7 @@ public class JSONFileController
         }
 
         BufferedReader fileReader = new BufferedReader(new FileReader(readFile.getPath()));
-        JsonParser parser = new JsonParser();
-        JsonObject importedObject = parser.parse(fileReader).getAsJsonObject();
+        JsonObject importedObject = JsonParser.parseReader(fileReader).getAsJsonObject();
         int partFile = validateAndGetFilePart(importedObject);
 
         if( partFile > Config.DEFAULT_PART_FILE )
@@ -107,7 +106,6 @@ public class JSONFileController
 
     private int validateAndGetFilePart( JsonObject importedObject )
     {
-
         try
         {
 

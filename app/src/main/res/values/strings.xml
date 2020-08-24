@@ -28,7 +28,6 @@
     <string name="unsupported_file_format">Unsupported file format.</string>
     <string name="unsupported_json_format">Unsupported JSON format.</string>
     <string name="warning_title_json_permission">Session Import Permission</string>
-    <string name="warning_json_permission">Session Import is not allowed when CellTrax is scanning.</string>
     <string name="warning_title_import">Import Session</string>
     <string name="warning_import_success">File has been imported successfully.</string>
     <string name="warning_import_skipped">Some of the sessions has been imported previously, therefore is skipped.</string>

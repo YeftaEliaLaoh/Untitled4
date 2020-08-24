@@ -21,7 +21,6 @@ import com.example.myapplication8.utilities.Config;
 
 public class LoginActivity extends AppCompatActivity
 {
-
     private SwitchCompat switchCompat;
     private EditText username;
     private EditText password;
@@ -56,18 +55,15 @@ public class LoginActivity extends AppCompatActivity
 
         username.setText(usernameTxt);
         password.setText(passwordTxt);
-
     }
 
     private void initLayout()
     {
-
         switchCompat = findViewById(R.id.demo_mode_switch);
         username = findViewById(R.id.user_login);
         password = findViewById(R.id.password_login);
         loginBtn = findViewById(R.id.login_btn);
         cancelBtn = findViewById(R.id.cancel_btn);
-
     }
 
     private void initEvent()
@@ -151,7 +147,6 @@ public class LoginActivity extends AppCompatActivity
 
     private void changesComponentDemoMode( boolean isChecked )
     {
-
         if( isChecked )
         {
             setFieldToDemoVersion(true, R.color.light_grey);
@@ -166,7 +161,6 @@ public class LoginActivity extends AppCompatActivity
     public void onResume()
     {
         super.onResume();
-
     }
 
     @Override
@@ -191,7 +185,5 @@ public class LoginActivity extends AppCompatActivity
     public void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults )
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
     }
-
 }

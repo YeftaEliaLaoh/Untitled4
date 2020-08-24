@@ -133,7 +133,6 @@ public class LeftSessionController
             @Override
             public void onClick( View v )
             {
-
                 importExportSendFile();
             }
         });
@@ -389,11 +388,9 @@ public class LeftSessionController
      */
     private void insertImportSession( File importedFile )
     {
-
         DialogProgressController progressController = new DialogProgressController(mainActivity, R.string.label_importing, 1);
         progressController.showDialog();
         new ImportJSONAsync(progressController).execute(importedFile);
-
     }
 
     /**
@@ -446,35 +443,6 @@ public class LeftSessionController
 
         fm.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, scannedListFragment, Config.SCAN_FRAGMENT).commit();
         ((MainActivity) sessionListFragment.getActivity()).getLeftPaneController().getButtonArrowBack().setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Used to set "select all" checkbox is checked or not in scanning mode
-     * When using this mode, the first index will not be selected when
-     * "Select All" checkbox is checked.
-     * This mode will be activated when CellTrax is currently scanning.
-     *
-     * @param position
-     * @param total
-     */
-    private void selectionScanMode( int position, int total )
-    {
-        //begin to count
-        selectedCount += getSelectionCount(position);
-
-        //check the checkbox if selected count is equal to total data when scanning
-        if( selectedCount < total )
-        {
-            checkBox.setChecked(false);
-        }
-        else if( selectedCount == total )
-        {
-            checkBox.setChecked(true);
-        }
-        else
-        {
-            checkBox.setChecked(false);
-        }
     }
 
     /**
@@ -559,14 +527,11 @@ public class LeftSessionController
 
     public class ImportJSONAsync extends AsyncTask<File, Session, Integer>
     {
-
         private DialogProgressController progressController;
 
         public ImportJSONAsync( DialogProgressController progressController )
         {
-
             this.progressController = progressController;
-
         }
 
         @Override
