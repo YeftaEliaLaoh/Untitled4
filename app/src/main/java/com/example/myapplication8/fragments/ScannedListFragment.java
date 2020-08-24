@@ -214,7 +214,6 @@ public class ScannedListFragment extends Fragment
             mainActivity.getMapController().clearMap();
         }
 
-        // Step 2
         //clear cluster item to handle select radio item in osm
         if( cellCalculation.getCenterBound() != null )
         {

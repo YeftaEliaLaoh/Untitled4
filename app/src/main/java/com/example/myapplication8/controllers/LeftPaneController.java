@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.example.myapplication8.R;
 import com.example.myapplication8.activities.MainActivity;
 
-
 public class LeftPaneController
 {
 

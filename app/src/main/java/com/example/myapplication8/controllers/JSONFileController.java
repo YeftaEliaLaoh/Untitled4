@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-
 public class JSONFileController
 {
 
@@ -143,7 +142,6 @@ public class JSONFileController
      */
     public Session validateAndGetCurrentSession( JsonObject importedObject, int partFile )
     {
-
 
         JsonObject sessionObject = importedObject.get(Config.SESSIONS_KEY).getAsJsonArray().get(0).getAsJsonObject();
 
@@ -318,6 +316,5 @@ public class JSONFileController
         return cellBuild;
 
     }
-
 
 }

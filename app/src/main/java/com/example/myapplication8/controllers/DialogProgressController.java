@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.example.myapplication8.R;
 
-
 public class DialogProgressController
 {
     private ProgressBar progressBar;

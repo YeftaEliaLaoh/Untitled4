@@ -44,7 +44,6 @@ public class GoogleMapController
         this.googleMap.setOnMarkerClickListener(markerManager);
         this.googleMap.setInfoWindowAdapter(markerManager);
 
-
     }
 
     public void addColorToAreaWithZoom( double latitude, double longitude )

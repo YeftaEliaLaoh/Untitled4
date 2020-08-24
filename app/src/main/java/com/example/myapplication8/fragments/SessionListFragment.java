@@ -120,7 +120,6 @@ public class SessionListFragment extends Fragment
             listviewAdapter.notifyDataSetChanged();
         }
     }
-    //issue 8442
 
     private int findIndexBySessionId( long sessionId )
     {

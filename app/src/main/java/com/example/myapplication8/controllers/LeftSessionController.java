@@ -243,7 +243,6 @@ public class LeftSessionController
             selectedItemSession.onSelected = !selectedItemSession.onSelected;
         }
 
-        //issue 8442 remove and add selectedSession into sessionlist
         if( selectedItemSession.onSelected )
         {
             selectedSession.add(sessionList.get(position));
@@ -254,7 +253,7 @@ public class LeftSessionController
             selectedSession.remove(sessionList.get(position));
             selectedCount--;
         }
-        //end issue
+
         return selectedCount;
     }
 
@@ -262,7 +261,6 @@ public class LeftSessionController
     {
         selectedCount = 0;
 
-        //issue 8442 to prevent when list session is empty
         if( listView.getAdapter().getCount() == 1 )
         {
             showWarningDialog(mainActivity.getString(R.string.msg_title_mlistview), mainActivity.getString(R.string.warning_correct_session_list));
@@ -286,7 +284,6 @@ public class LeftSessionController
 
         sessionListFragment.listviewAdapter.notifyDataSetChanged();
     }
-    //end issue
 
     // deselect all the item on the list by setting onselected false
     private void deselectAll()
@@ -318,7 +315,6 @@ public class LeftSessionController
         sessionListFragment.updateActiveSessionStopTime(stopTime);
     }
 
-
     private void onClearLogClicked()
     {
         if( selectedCount <= 0 )
@@ -327,7 +323,6 @@ public class LeftSessionController
         }
         else
         {
-            //issue 8442 dialog box clearing log click event
             DialogInterface.OnClickListener dlc = new DialogInterface.OnClickListener()
             {
                 @Override
