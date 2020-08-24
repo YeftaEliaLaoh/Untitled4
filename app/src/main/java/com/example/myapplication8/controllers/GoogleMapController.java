@@ -25,7 +25,7 @@ public class GoogleMapController
 {
 
     private GoogleMap googleMap;
-    private Marker currentLocationMarker;
+    private Marker marker;
 
     private ClusterManager<ClusteredCenterMarker> clusterManager;
 
@@ -185,9 +185,9 @@ public class GoogleMapController
     {
 
         LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-        if( null != currentLocationMarker )
+        if( null != marker )
         {
-            currentLocationMarker.remove();
+            marker.remove();
         }
 
         zoomToArea(location.getLatitude(), location.getLongitude(), (int) googleMap.getCameraPosition().zoom);

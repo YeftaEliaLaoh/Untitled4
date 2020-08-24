@@ -10,7 +10,7 @@ import com.example.myapplication8.models.Cell;
 import com.example.myapplication8.models.MeasuredLocation;
 import com.example.myapplication8.models.Session;
 
-@Database(entities = {Session.class, Cell.class, MeasuredLocation.class}, version = 2, exportSchema = false)
+@Database(entities = {Session.class, Cell.class, MeasuredLocation.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase
 {
     public abstract SessionDao sessionDao();
@@ -18,5 +18,6 @@ public abstract class AppDatabase extends RoomDatabase
     public abstract CellDao cellDao();
 
     public abstract LocationDao locationDao();
+
 
 }

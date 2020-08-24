@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.PathOverlay;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -56,11 +55,11 @@ public class CellCalculation
 
     // Components for OSM
     private org.osmdroid.views.overlay.Polygon centerPolygonOsm;
-    private PathOverlay convexHullOsm;
+    private org.osmdroid.views.overlay.Polyline convexHullOsm;
     private ArrayList<org.osmdroid.views.overlay.Polygon> cellListMarkerOsm;
     private ArrayList<org.osmdroid.views.overlay.Polygon> locationListMarkerOsm;
     private ArrayList<org.osmdroid.views.overlay.Marker> locationCenterIconListMarkerOsm;
-    private PathOverlay locationPolylineOsm;
+    private org.osmdroid.views.overlay.Polyline locationPolylineOsm;
 
     private boolean pointIncluded = false;
 
@@ -195,7 +194,6 @@ public class CellCalculation
     }
 
 
-
     // get datetime of the current scanned type, return empty string if the current scanned type
     // list is empty
     public String getDateTime()
@@ -261,10 +259,6 @@ public class CellCalculation
         {
             clusteredMarker = new ClusteredCenterMarker(center, getCellReference(), Config.SCANNED_TYPE_CELL);
         }
-        else
-        {
-            clusteredMarker = new ClusteredCenterMarker(center, getWifiSsid(), Config.SCANNED_TYPE_WIFI);
-        }
     }
 
     public ClusteredCenterMarker getClusteredMarker()
@@ -290,12 +284,12 @@ public class CellCalculation
         this.loctionPolyline = polyline;
     }
 
-    public void setLocationPolylineOsm( PathOverlay pathOverlay )
+    public void setLocationPolylineOsm( org.osmdroid.views.overlay.Polyline pathOverlay )
     {
         this.locationPolylineOsm = pathOverlay;
     }
 
-    public PathOverlay getLocationPolylineOsm()
+    public org.osmdroid.views.overlay.Polyline getLocationPolylineOsm()
     {
         return locationPolylineOsm;
     }
@@ -494,11 +488,11 @@ public class CellCalculation
         return convexHullOptions;
     }
 
-    public PathOverlay getHullPolylineOptionsOsm( Context context, int color )
+    public org.osmdroid.views.overlay.Polyline getHullPolylineOptionsOsm( Context context, int color )
     {
-        PathOverlay pathOverlay = new PathOverlay(color, context);
-        pathOverlay.getPaint().setStyle(Paint.Style.FILL);
-        pathOverlay.setColor(color);
+        org.osmdroid.views.overlay.Polyline polyline = new org.osmdroid.views.overlay.Polyline();
+        polyline.getOutlinePaint().setStyle(Paint.Style.FILL);
+        polyline.getOutlinePaint().setColor(color);
 
         Point[] hull = ConvexHull.convexHull(convexHullPoints).clone();
         for( Point point : hull )
@@ -506,11 +500,11 @@ public class CellCalculation
             if( point != null )
             {
                 Log.d("info cell", "X: " + point.x + " Y : " + point.y);
-                pathOverlay.addPoint(new GeoPoint(point.x, point.y));
+                polyline.addPoint(new GeoPoint(point.x, point.y));
             }
         }
 
-        return pathOverlay;
+        return polyline;
 
     }
 
@@ -519,12 +513,12 @@ public class CellCalculation
         this.convexHull = polygon;
     }
 
-    public PathOverlay getConvexHullOsm()
+    public org.osmdroid.views.overlay.Polyline getConvexHullOsm()
     {
         return this.convexHullOsm;
     }
 
-    public void setPolylineOsm( PathOverlay convexHullOsm )
+    public void setPolylineOsm( org.osmdroid.views.overlay.Polyline convexHullOsm )
     {
         this.convexHullOsm = convexHullOsm;
     }

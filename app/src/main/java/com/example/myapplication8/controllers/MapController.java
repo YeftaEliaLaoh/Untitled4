@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MapController
 {
-    private GoogleMapController gmapController;
+    private GoogleMapController googleMapController;
     private OpenStreetMapController openStreetMapController;
     private List<Location> locationList;
     private double lastZoomLevel;
@@ -47,7 +47,7 @@ public class MapController
     {
         this.context = context;
         this.openStreetMapController = new OpenStreetMapController(mapView, context);
-        this.gmapController = new GoogleMapController();
+        this.googleMapController = new GoogleMapController();
         this.mapView = mapView;
         locationList = new ArrayList<>();
     }
@@ -55,18 +55,18 @@ public class MapController
     public void setGoogleMap( Context context, GoogleMap googleMap )
     {
         this.context = context;
-        this.gmapController.setGoogleMap(context, googleMap);
+        this.googleMapController.setGoogleMap(context, googleMap);
         this.googleMap = googleMap;
-        CameraIdleListener cameraIdleListener = new CameraIdleListener(gmapController.getClusterManager());
+        CameraIdleListener cameraIdleListener = new CameraIdleListener(googleMapController.getClusterManager());
         openStreetMapController.getMapView().addMapListener(cameraIdleListener);
-        gmapController.getGoogleMap().setOnCameraIdleListener(cameraIdleListener);
+        googleMapController.getGoogleMap().setOnCameraIdleListener(cameraIdleListener);
     }
 
     public void registerEventMapWrapper()
     {
         if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
         {
-            gmapController.registerEventGmap(registerEventGmap);
+            googleMapController.registerEventGmap(registerEventGmap);
         }
         else
         {
@@ -74,9 +74,9 @@ public class MapController
         }
     }
 
-    public GoogleMapController getGmapController()
+    public GoogleMapController getGoogleMapController()
     {
-        return gmapController;
+        return googleMapController;
     }
 
     public OpenStreetMapController getOpenStreetMapController()
@@ -107,7 +107,7 @@ public class MapController
         }
         else if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
         {
-            gmapController.animateCameraPosition(centerBound);
+            googleMapController.animateCameraPosition(centerBound);
         }
     }
 
@@ -116,7 +116,7 @@ public class MapController
     {
         if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
         {
-            gmapController.addPolyLine(polylineOptions, polylineOptions.getColor());
+            googleMapController.addPolyLine(polylineOptions, polylineOptions.getColor());
         }
         else if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP )
         {
@@ -129,7 +129,7 @@ public class MapController
     {
         if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
         {
-            gmapController.clear();
+            googleMapController.clear();
         }
         else if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP )
         {
@@ -140,8 +140,8 @@ public class MapController
 
     public void clearMapAndShowWorld()
     {
-        gmapController.clear();
-        gmapController.showWorldMap();
+        googleMapController.clear();
+        googleMapController.showWorldMap();
         openStreetMapController.clear();
         openStreetMapController.showWorldOsm();
 
@@ -160,7 +160,7 @@ public class MapController
         int zoomLevel = 13;
         if( MapSingleton.getInstance().getSelectedMap() == Config.GOOGLE_MAP )
         {
-            gmapController.zoomToArea(latitude, longitude, zoomLevel);
+            googleMapController.zoomToArea(latitude, longitude, zoomLevel);
         }
         else if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP )
         {

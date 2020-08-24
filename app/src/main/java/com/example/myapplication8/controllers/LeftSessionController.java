@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.myapplication8.R;
 import com.example.myapplication8.activities.MainActivity;
+import com.example.myapplication8.fragments.ScannedListFragment;
 import com.example.myapplication8.fragments.SessionListFragment;
 import com.example.myapplication8.models.Cell;
 import com.example.myapplication8.models.ItemSession;
@@ -35,38 +36,38 @@ import java.util.List;
 
 public class LeftSessionController
 {
-    private ListView mListView;
-    private CheckBox mCheckBox;
+    private ListView listView;
+    private CheckBox checkBox;
     private TextView mTextSelectedCount;
     private Button mButtonImport;
     private Button mButtonClearLog;
-    private SessionListFragment fragment;
+    private SessionListFragment sessionListFragment;
     private int selectedCount = 0;
     private MainActivity mainActivity;
-    private Session currentSession;
+    private Session session;
+    private ScannedListFragment scannedListFragment;
 
     private ArrayList<Session> selectedSession;
     private List<Session> sessionList;
     //isLongPressedAllowed is long click item event flag
     private boolean isLongPressedAllowed;
-
     private boolean isAllowedSendingToServer;
 
-    public LeftSessionController( SessionListFragment fragment )
+    public LeftSessionController( SessionListFragment sessionListFragment )
     {
-        mainActivity = (MainActivity) fragment.getActivity();
-        this.fragment = fragment;
+        mainActivity = (MainActivity) sessionListFragment.getActivity();
+        this.sessionListFragment = sessionListFragment;
         this.isLongPressedAllowed = true;
-        this.mCheckBox = fragment.view.findViewById(R.id.layout_left_checkbox);
-        mainActivity = (MainActivity) fragment.getActivity();
-        mListView = fragment.view.findViewById(R.id.listview);
-        mButtonClearLog = fragment.view.findViewById(R.id.button_clear_log);
-        mButtonImport = fragment.view.findViewById(R.id.button_import);
+        this.checkBox = sessionListFragment.view.findViewById(R.id.layout_left_checkbox);
+        mainActivity = (MainActivity) sessionListFragment.getActivity();
+        listView = sessionListFragment.view.findViewById(R.id.listview);
+        mButtonClearLog = sessionListFragment.view.findViewById(R.id.button_clear_log);
+        mButtonImport = sessionListFragment.view.findViewById(R.id.button_import);
 
-        mTextSelectedCount = fragment.view.findViewById(R.id.layout_left_counter);
+        mTextSelectedCount = sessionListFragment.view.findViewById(R.id.layout_left_counter);
         mTextSelectedCount.setVisibility(View.VISIBLE);
         selectedSession = new ArrayList<>();
-        sessionList = fragment.getSessionList();
+        sessionList = sessionListFragment.getSessionList();
 
         updateCount(0);
         initActiveSession();
@@ -74,10 +75,10 @@ public class LeftSessionController
 
     public void registerEvent()
     {
-        mListView.setCacheColorHint(Color.WHITE);
-        mListView.requestFocus(0);
-        mListView.setAdapter(fragment.listviewAdapter);
-        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        listView.setCacheColorHint(Color.WHITE);
+        listView.requestFocus(0);
+        listView.setAdapter(sessionListFragment.listviewAdapter);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked )
@@ -98,9 +99,9 @@ public class LeftSessionController
                 }
             }
         });
-        mListView.setOnItemLongClickListener(new SessionListOnLongPressListener());
+        listView.setOnItemLongClickListener(new SessionListOnLongPressListener());
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick( AdapterView<?> parent, View view, int position, long id )
@@ -142,13 +143,13 @@ public class LeftSessionController
             @Override
             public void onClick( View v )
             {
-                if( mCheckBox.isChecked() )
+                if( checkBox.isChecked() )
                 {
-                    mCheckBox.setChecked(false);
+                    checkBox.setChecked(false);
                 }
                 else
                 {
-                    mCheckBox.setChecked(true);
+                    checkBox.setChecked(true);
                 }
             }
         });
@@ -170,9 +171,9 @@ public class LeftSessionController
 
     }
 
-    public Session getCurrentSession()
+    public Session getSession()
     {
-        return currentSession;
+        return session;
     }
 
     // update the number of selected item
@@ -220,14 +221,14 @@ public class LeftSessionController
     private void selectItemToHighlight( int position )
     {
         //counter when scanning/not state
-        int countWhenNotScanning = mListView.getAdapter().getCount();
-        int countWhenScanning = mListView.getAdapter().getCount() - 1;
+        int countWhenNotScanning = listView.getAdapter().getCount();
+        int countWhenScanning = listView.getAdapter().getCount() - 1;
 
         selectionNormalMode(position, countWhenNotScanning);
 
         updateCount(selectedCount);
         isLongPressedAllowed = selectedCount == 0;
-        fragment.listviewAdapter.notifyDataSetChanged();
+        sessionListFragment.listviewAdapter.notifyDataSetChanged();
     }
 
     // get the number of selected item from the list
@@ -235,7 +236,7 @@ public class LeftSessionController
     {
         int selectedCount = 0;
 
-        ItemSession selectedItemSession = (ItemSession) fragment.data.get(position);
+        ItemSession selectedItemSession = (ItemSession) sessionListFragment.data.get(position);
 
         if( position != -1 )
         {
@@ -262,14 +263,14 @@ public class LeftSessionController
         selectedCount = 0;
 
         //issue 8442 to prevent when list session is empty
-        if( mListView.getAdapter().getCount() == 1 )
+        if( listView.getAdapter().getCount() == 1 )
         {
             showWarningDialog(mainActivity.getString(R.string.msg_title_mlistview), mainActivity.getString(R.string.warning_correct_session_list));
-            mCheckBox.setChecked(false);
+            checkBox.setChecked(false);
         }
         else
         {
-            for( ListviewItem item : fragment.data )
+            for( ListviewItem item : sessionListFragment.data )
             {
                 if( item.getPosition() != 0 )
                 {
@@ -283,14 +284,14 @@ public class LeftSessionController
         //end issue
         mButtonImport.setVisibility(View.GONE);
 
-        fragment.listviewAdapter.notifyDataSetChanged();
+        sessionListFragment.listviewAdapter.notifyDataSetChanged();
     }
     //end issue
 
     // deselect all the item on the list by setting onselected false
     private void deselectAll()
     {
-        for( ListviewItem item : fragment.data )
+        for( ListviewItem item : sessionListFragment.data )
         {
             ItemSession itemSession = (ItemSession) item;
             itemSession.onSelected = false;
@@ -302,19 +303,19 @@ public class LeftSessionController
 
         mButtonImport.setEnabled(true);
 
-        fragment.listviewAdapter.notifyDataSetChanged();
+        sessionListFragment.listviewAdapter.notifyDataSetChanged();
         updateCount(0);
     }
 
 
     public void addNewSession( Session session )
     {
-        fragment.addNewSession(session);
+        sessionListFragment.addNewSession(session);
     }
 
     public void updateActiveSessionStopTime( long stopTime )
     {
-        fragment.updateActiveSessionStopTime(stopTime);
+        sessionListFragment.updateActiveSessionStopTime(stopTime);
     }
 
 
@@ -322,7 +323,7 @@ public class LeftSessionController
     {
         if( selectedCount <= 0 )
         {
-            showWarningDialog(fragment.getActivity().getString(R.string.warning_title_active_session_selection), mainActivity.getString(R.string.warning_select_item));
+            showWarningDialog(sessionListFragment.getActivity().getString(R.string.warning_title_active_session_selection), mainActivity.getString(R.string.warning_select_item));
         }
         else
         {
@@ -333,7 +334,7 @@ public class LeftSessionController
                 public void onClick( DialogInterface dialog, int which )
                 {
                     clearSelectedSession(which);
-                    mCheckBox.setChecked(false);
+                    checkBox.setChecked(false);
                     updateCount(selectedCount);
                 }
             };
@@ -372,7 +373,7 @@ public class LeftSessionController
                     mainActivity.getAppDatabase().sessionDao().deleteById(sessionID);
                     mainActivity.getAppDatabase().locationDao().deleteBySessionId(sessionID);
                     mainActivity.getAppDatabase().cellDao().deleteBySessionId(sessionID);
-                    fragment.deleteSessionByObject(sessionID);
+                    sessionListFragment.deleteSessionByObject(sessionID);
                     selectedCount--;
                 }
                 isLongPressedAllowed = true;
@@ -418,7 +419,7 @@ public class LeftSessionController
         deselectAll();
         //update flag when deselect all item
         selectedCount = 0;
-        mCheckBox.setChecked(false);
+        checkBox.setChecked(false);
         isLongPressedAllowed = true;
     }
 
@@ -429,22 +430,27 @@ public class LeftSessionController
      */
     private void viewScanResultList( ListviewItem item )
     {
+       // mainActivity.getMapToolsController().setViewingSession(true);
         ItemSession itemSession = (ItemSession) item;
-        FragmentManager fm = fragment.getFragmentManager();
+        FragmentManager fm = sessionListFragment.getFragmentManager();
 
-        currentSession = itemSession.getSession();
+        scannedListFragment = new ScannedListFragment();
+        session = itemSession.getSession();
 
+        //to reset current session size if the cell and wifi is not 0
+        if( session.getCellList().size() != 0 )
+        {
+            session.getCellList().clear();
+        }
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("session", itemSession.getSession());
+        scannedListFragment.setArguments(bundle);
 
         MapSingleton.getInstance().setTouchStatus(true);
 
-        // Change textview 'Session List' to 'Scan Result'
-        ((TextView) fragment.getActivity().findViewById(R.id.text_header_title_layout_main_left)).setText(fragment.getActivity().getString(R.string.label_scan_result_title));
-
         fm.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, scannedListFragment, Config.SCAN_FRAGMENT).commit();
-        ((MainActivity) fragment.getActivity()).getLeftPaneController().getButtonArrowBack().setVisibility(View.VISIBLE);
+        ((MainActivity) sessionListFragment.getActivity()).getLeftPaneController().getButtonArrowBack().setVisibility(View.VISIBLE);
     }
 
     /**
@@ -464,15 +470,15 @@ public class LeftSessionController
         //check the checkbox if selected count is equal to total data when scanning
         if( selectedCount < total )
         {
-            mCheckBox.setChecked(false);
+            checkBox.setChecked(false);
         }
         else if( selectedCount == total )
         {
-            mCheckBox.setChecked(true);
+            checkBox.setChecked(true);
         }
         else
         {
-            mCheckBox.setChecked(false);
+            checkBox.setChecked(false);
         }
     }
 
@@ -491,15 +497,15 @@ public class LeftSessionController
         //check the checkbox  if selected count is equal to total data when not in scanning mode
         if( selectedCount < total )
         {
-            mCheckBox.setChecked(false);
+            checkBox.setChecked(false);
         }
         else if( selectedCount == total )
         {
-            mCheckBox.setChecked(true);
+            checkBox.setChecked(true);
         }
         else
         {
-            mCheckBox.setChecked(false);
+            checkBox.setChecked(false);
         }
     }
 
@@ -593,11 +599,11 @@ public class LeftSessionController
 
             Session importedSession = newSession[0];
 
-            boolean isSessionCountUpdated = fragment.isExistingSessionCountUpdated(importedSession);
+            boolean isSessionCountUpdated = sessionListFragment.isExistingSessionCountUpdated(importedSession);
 
             if( !isSessionCountUpdated )
             {
-                fragment.addNewSession(importedSession);
+                sessionListFragment.addNewSession(importedSession);
             }
 
             progressController.updateProgressDialog();

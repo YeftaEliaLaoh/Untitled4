@@ -1,12 +1,5 @@
 package com.example.myapplication8.controllers;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Environment;
-import android.telephony.TelephonyManager;
-
 
 import com.example.myapplication8.activities.MainActivity;
 import com.example.myapplication8.databases.AppDatabase;
@@ -23,14 +16,9 @@ import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 
 public class JSONFileController

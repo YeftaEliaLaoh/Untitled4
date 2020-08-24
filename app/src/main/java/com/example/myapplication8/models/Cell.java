@@ -2,22 +2,20 @@ package com.example.myapplication8.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.telephony.CellInfo;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.myapplication8.utilities.Config;
 import com.example.myapplication8.utilities.Utility;
 
 @Entity
 public class Cell extends Radio implements Parcelable
-
 {
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "cell_id")
     private int id;
-    @ColumnInfo(name = "sessionId")
+    @ColumnInfo(name = "cell_sessionId")
     private int sessionId;
     @ColumnInfo(name = "cellReference")
     private String cellReference;
@@ -36,8 +34,13 @@ public class Cell extends Radio implements Parcelable
     @ColumnInfo(name = "locationId")
     private long locationId;
 
-    public Cell(Parcel parcel){
+    public Cell( Parcel parcel )
+    {
         readFromParcel(parcel);
+    }
+
+    public Cell()
+    {
     }
 
     public int getId()

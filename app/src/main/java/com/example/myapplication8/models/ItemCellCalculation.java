@@ -2,6 +2,7 @@ package com.example.myapplication8.models;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -61,7 +62,10 @@ public class ItemCellCalculation extends ListviewItem
         }
         else
         {
-            holder.parent.setBackgroundColor(holder.parent.getResources().getColor(android.R.color.transparent, null));
+            if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M )
+            {
+                holder.parent.setBackgroundColor(holder.parent.getResources().getColor(android.R.color.transparent, null));
+            }
         }
 
         if( center != null )

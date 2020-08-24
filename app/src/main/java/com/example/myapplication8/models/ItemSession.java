@@ -2,7 +2,6 @@ package com.example.myapplication8.models;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication8.R;

@@ -1,6 +1,5 @@
 package com.example.myapplication8.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -14,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.myapplication8.R;
 import com.example.myapplication8.activities.MainActivity;
 import com.example.myapplication8.models.Cell;
@@ -21,8 +22,8 @@ import com.example.myapplication8.models.CellCalculation;
 import com.example.myapplication8.models.ItemCellCalculation;
 import com.example.myapplication8.models.ListviewAdapter;
 import com.example.myapplication8.models.ListviewItem;
-import com.example.myapplication8.models.MapSingleton;
 import com.example.myapplication8.models.MeasuredLocation;
+import com.example.myapplication8.models.MeasuredLocationAndCell;
 import com.example.myapplication8.models.Session;
 import com.example.myapplication8.utilities.Config;
 import com.example.myapplication8.utilities.SwipeRefreshLayoutBottom;
@@ -31,7 +32,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.PathOverlay;
+import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,7 +202,6 @@ public class ScannedListFragment extends Fragment
             selectedRadio.add(cellCalculation);
         }
 
-        mainActivity.getMapController().drawClusterOsmOnMap();
         mAdapter.notifyDataSetChanged();
 
     }
@@ -221,20 +221,6 @@ public class ScannedListFragment extends Fragment
             mainActivity.getMapController().zoomToBound(cellCalculation.getCenterBound());
         }
 
-        mainActivity.getMapController().clearClusterOsmOnMap();
-
-        // Step 3
-        if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_CELL )
-        {
-            mainActivity.getMapController().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell(), Config.SCANNED_TYPE_CELL);
-        }
-        else if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_WIFI )
-        {
-            mainActivity.getMapController().drawRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi(), Config.SCANNED_TYPE_WIFI);
-        }
-
-        // Step 4
-        mainActivity.getMapController().drawLocationBasedOnSelectedProfile(cellCalculation, profileSingleton.getSelectedLocation());
     }
 
     /**
@@ -245,20 +231,6 @@ public class ScannedListFragment extends Fragment
      */
     public void unselectRadioItem( CellCalculation cellCalculation )
     {
-        // Step 1
-        mainActivity.getMapController().removeLocationBasedOnSelectedProfile(cellCalculation);
-
-        // Step 2
-        if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_CELL )
-        {
-            mainActivity.getMapController().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedCell());
-
-        }
-        else if( cellCalculation.getCurrentScannedType() == Config.SCANNED_TYPE_WIFI )
-        {
-            mainActivity.getMapController().removeRadioBasedOnProfile(cellCalculation, profileSingleton.getSelectedWifi());
-        }
-
 
         if( selectedItem == 0 )
         {
@@ -269,11 +241,11 @@ public class ScannedListFragment extends Fragment
             {
                 ItemCellCalculation itemCellCalc = (ItemCellCalculation) listviewItem;
                 CellCalculation cellCalc = itemCellCalc.getCellCalculation();
-                if( cellCalc.getCurrentScannedType() == Config.SCANNED_TYPE_CELL && selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
+                /*if( cellCalc.getCurrentScannedType() == Config.SCANNED_TYPE_CELL && selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
                 {
                     mainActivity.getMapController().drawRadioBasedOnProfile(cellCalc, profileSingleton.getOverviewCell(), Config.SCANNED_TYPE_CELL);
                     selectedCell++;
-                }
+                }*/
 
             }
         }
@@ -298,7 +270,7 @@ public class ScannedListFragment extends Fragment
         protected Void doInBackground( Cell... cell )
         {
             CellCalculation cellCalculation = new CellCalculation(Config.SCANNED_TYPE_CELL);
-            cellCalculation = mainActivity.getCellTable().getByCellRefAndSessionId(cellCalculation, session.getId(), cell[0].getCellReference());
+            List<MeasuredLocationAndCell> measuredLocationAndCells = mainActivity.getAppDatabase().cellDao().getByCellRefAndSessionId(session.getId(), cell[0].getCellReference());
 
             cellCalculation.calculateCenter();
             publishProgress(cellCalculation);
@@ -313,11 +285,11 @@ public class ScannedListFragment extends Fragment
 
             new CellLocationAsyncTask().executeOnExecutor(THREAD_POOL_EXECUTOR, cellCalculations[0].getCellList());
 
-            // Draw the cells
+/*            // Draw the cells
             if( !profileSingleton.getOverviewCell().getRadioNumber().isShowing() || selectedCell < profileSingleton.getOverviewCell().getRadioNumber().getAmountRadio() )
             {
                 mainActivity.getMapController().drawRadioBasedOnProfile(cellCalculations[0], profileSingleton.getOverviewCell(), Config.SCANNED_TYPE_CELL);
-            }
+            }*/
 
 
             if( !selectionOnClear )
@@ -360,10 +332,10 @@ public class ScannedListFragment extends Fragment
             }
             else
             {
-                if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP && selectedCell == session.getCellList().size() )
+                /*if( MapSingleton.getInstance().getSelectedMap() == Config.OPEN_STREET_MAP && selectedCell == session.getCellList().size() )
                 {
                     mainActivity.getMapController().drawClusterOsmOnMap();
-                }
+                }*/
             }
         }
     }
@@ -430,20 +402,20 @@ public class ScannedListFragment extends Fragment
     public void drawLocationOnMapAsync( MeasuredLocation measuredLocation )
     {
         PolylineOptions polylineOptions = new PolylineOptions();
-        PathOverlay pathOverlay = new PathOverlay(Color.BLACK, mainActivity);
+        Polyline polyline = new Polyline();
         LatLng point;
 
         point = new LatLng(measuredLocation.getLatitude(), measuredLocation.getLongitude());
         builder.include(point);
         polylineOptions.add(point);
-        pathOverlay.addPoint(new GeoPoint(measuredLocation.getLatitude(), measuredLocation.getLongitude()));
+        polyline.addPoint(new GeoPoint(measuredLocation.getLatitude(), measuredLocation.getLongitude()));
 
         if( !isPointIncluded )
         {
             isPointIncluded = true;
         }
 
-        if( profileSingleton.getOverviewLocation().getLineOfRoute().isShowing() )
+        /*if( profileSingleton.getOverviewLocation().getLineOfRoute().isShowing() )
         {
             pathOverlay.setColor(profileSingleton.getOverviewLocation().getLineOfRoute().getColor());
             polylineOptions.color(profileSingleton.getOverviewLocation().getLineOfRoute().getColor());
@@ -457,7 +429,7 @@ public class ScannedListFragment extends Fragment
         }
 
         locationHashMap.put(measuredLocation.getId(), measuredLocation);
-        mainActivity.getMapController().drawLocationBasedOnProfile(mainActivity, measuredLocation, profileSingleton.getOverviewLocation());
+        mainActivity.getMapController().drawLocationBasedOnProfile(mainActivity, measuredLocation, profileSingleton.getOverviewLocation());*/
 
     }
 

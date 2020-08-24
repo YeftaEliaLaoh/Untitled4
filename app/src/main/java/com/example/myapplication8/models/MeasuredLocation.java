@@ -8,9 +8,10 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class MeasuredLocation implements Parcelable{
-
+public class MeasuredLocation implements Parcelable
+{
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "measuredLocation_id")
     private int id;
     @ColumnInfo(name = "latitude")
     private double latitude;
@@ -24,7 +25,7 @@ public class MeasuredLocation implements Parcelable{
     private double elevation;
     @ColumnInfo(name = "bearing")
     private double bearing;
-    @ColumnInfo(name = "sessionId")
+    @ColumnInfo(name = "measuredLocation_sessionId")
     private int sessionId;
     @ColumnInfo(name = "numCell")
     private int numCell;
@@ -33,77 +34,95 @@ public class MeasuredLocation implements Parcelable{
     @ColumnInfo(name = "totalRadio")
     private int totalRadio;
 
-    public MeasuredLocation(){
+    public MeasuredLocation()
+    {
 
     }
 
-    public MeasuredLocation( Parcel parcel){
+    public MeasuredLocation( Parcel parcel )
+    {
         readFromParcel(parcel);
     }
 
-    public double getBearing(){
+    public double getBearing()
+    {
         return bearing;
     }
 
-    public void setBearing(double bearing){
+    public void setBearing( double bearing )
+    {
         this.bearing = bearing;
     }
 
-    public double getElevation(){
+    public double getElevation()
+    {
         return elevation;
     }
 
-    public void setElevation(double elevation){
+    public void setElevation( double elevation )
+    {
         this.elevation = elevation;
     }
 
-    public long getTime(){
+    public long getTime()
+    {
         return time;
     }
 
-    public void setTime(long time){
+    public void setTime( long time )
+    {
         this.time = time;
     }
 
-    public double getAccuracy(){
+    public double getAccuracy()
+    {
         return accuracy;
     }
 
-    public void setAccuracy(double accuracy){
+    public void setAccuracy( double accuracy )
+    {
         this.accuracy = accuracy;
     }
 
-    public double getLongitude(){
+    public double getLongitude()
+    {
         return longitude;
     }
 
-    public void setLongitude(double longitude){
+    public void setLongitude( double longitude )
+    {
         this.longitude = longitude;
     }
 
-    public double getLatitude(){
+    public double getLatitude()
+    {
         return latitude;
     }
 
-    public void setLatitude(double latitude){
+    public void setLatitude( double latitude )
+    {
         this.latitude = latitude;
     }
 
-    public int getSessionId(){
+    public int getSessionId()
+    {
         return sessionId;
     }
 
-    public void setSessionId(int session_id){
+    public void setSessionId( int session_id )
+    {
         this.sessionId = session_id;
     }
 
     @Override
-    public int describeContents(){
+    public int describeContents()
+    {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags){
+    public void writeToParcel( Parcel dest, int flags )
+    {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeDouble(accuracy);
@@ -116,7 +135,8 @@ public class MeasuredLocation implements Parcelable{
         dest.writeInt(totalRadio);
     }
 
-    public void readFromParcel(Parcel parcel){
+    public void readFromParcel( Parcel parcel )
+    {
         latitude = parcel.readDouble();
         longitude = parcel.readDouble();
         accuracy = parcel.readDouble();
@@ -129,46 +149,57 @@ public class MeasuredLocation implements Parcelable{
         totalRadio = parcel.readInt();
     }
 
-    public static final Creator CREATOR = new Creator(){
+    public static final Creator CREATOR = new Creator()
+    {
 
-        public MeasuredLocation createFromParcel(Parcel in){
+        public MeasuredLocation createFromParcel( Parcel in )
+        {
             return new MeasuredLocation(in);
         }
 
-        public MeasuredLocation[] newArray(int size){
+        public MeasuredLocation[] newArray( int size )
+        {
             return new MeasuredLocation[size];
         }
     };
 
-    public int getId(){
+    public int getId()
+    {
         return id;
     }
 
-    public void setId(int id){
+    public void setId( int id )
+    {
         this.id = id;
     }
 
-    public int getNumCell(){
+    public int getNumCell()
+    {
         return numCell;
     }
 
-    public void setNumCell(int numCell){
+    public void setNumCell( int numCell )
+    {
         this.numCell = numCell;
     }
 
-    public int getNumWifi(){
+    public int getNumWifi()
+    {
         return numWifi;
     }
 
-    public void setNumWifi(int numWifi){
+    public void setNumWifi( int numWifi )
+    {
         this.numWifi = numWifi;
     }
 
-    public int getTotalRadio(){
+    public int getTotalRadio()
+    {
         return totalRadio;
     }
 
-    public void setTotalRadio(int totalRadio){
+    public void setTotalRadio( int totalRadio )
+    {
         this.totalRadio = totalRadio;
     }
 }

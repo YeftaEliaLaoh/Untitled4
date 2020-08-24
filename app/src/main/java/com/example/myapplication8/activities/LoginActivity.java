@@ -1,11 +1,8 @@
 package com.example.myapplication8.activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -18,17 +15,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.app.ActivityCompat;
 
 import com.example.myapplication8.R;
 import com.example.myapplication8.utilities.Config;
 
-import java.util.ArrayList;
-
 public class LoginActivity extends AppCompatActivity
 {
 
-    private SwitchCompat demoModeSwitch;
+    private SwitchCompat switchCompat;
     private EditText username;
     private EditText password;
     private Button loginBtn;
@@ -68,7 +62,7 @@ public class LoginActivity extends AppCompatActivity
     private void initLayout()
     {
 
-        demoModeSwitch = findViewById(R.id.demo_mode_switch);
+        switchCompat = findViewById(R.id.demo_mode_switch);
         username = findViewById(R.id.user_login);
         password = findViewById(R.id.password_login);
         loginBtn = findViewById(R.id.login_btn);
@@ -120,7 +114,7 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
-        demoModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
             public void onCheckedChanged( CompoundButton compoundButton, boolean isChecked )

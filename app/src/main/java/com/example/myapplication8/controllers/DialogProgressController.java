@@ -12,7 +12,7 @@ import com.example.myapplication8.R;
 public class DialogProgressController
 {
     private ProgressBar progressBar;
-    private TextView textProgress;
+    private TextView textView;
 
     private Context context;
     private Dialog dialog;
@@ -37,7 +37,7 @@ public class DialogProgressController
     private void initLayout(){
 
         progressBar = dialog.findViewById(R.id.dialog_progress);
-        textProgress = dialog.findViewById(R.id.dialog_txt_progress);
+        textView = dialog.findViewById(R.id.dialog_txt_progress);
         TextView headerTitle = dialog.findViewById(R.id.deviceInfo_text_header_title);
 
         if(label != R.string.label_exporting)
@@ -70,7 +70,7 @@ public class DialogProgressController
             extraMessage = " " + max + " session(s)";
         }
 
-        textProgress.setText(context.getString(label) + extraMessage);
+        textView.setText(context.getString(label) + extraMessage);
 
     }
 

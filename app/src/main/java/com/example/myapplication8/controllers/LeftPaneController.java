@@ -17,7 +17,7 @@ public class LeftPaneController
 
     private ImageButton mButtonHideList;
     private ImageButton mButtonExpandList;
-    private LinearLayout mLayoutLeft;
+    private LinearLayout linearLayout;
     private RelativeLayout mLayoutCollapse;
     private MainActivity mainActivity;
 
@@ -38,7 +38,7 @@ public class LeftPaneController
     {
         mButtonHideList = mainActivity.findViewById(R.id.image_arrow_left);
         mButtonExpandList = mainActivity.findViewById(R.id.image_expand);
-        mLayoutLeft = mainActivity.findViewById(R.id.layout_left);
+        linearLayout = mainActivity.findViewById(R.id.layout_left);
         mLayoutCollapse = mainActivity.findViewById(R.id.layout_collapse);
         layout_header_collapse = mainActivity.findViewById(R.id.layout_header_collapse);
         mTextHeaderTitle = mainActivity.findViewById(R.id.text_header_title_layout_main_left);
@@ -54,7 +54,7 @@ public class LeftPaneController
             @Override
             public void onClick( View v )
             {
-                mLayoutLeft.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
                 mLayoutCollapse.setVisibility(View.VISIBLE);
             }
         });
@@ -65,7 +65,7 @@ public class LeftPaneController
             public void onClick( View v )
             {
                 mLayoutCollapse.setVisibility(View.GONE);
-                mLayoutLeft.setVisibility(View.VISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
             }
         });
 
@@ -75,7 +75,7 @@ public class LeftPaneController
             public void onClick( View v )
             {
                 mLayoutCollapse.setVisibility(View.GONE);
-                mLayoutLeft.setVisibility(View.VISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
             }
         });
         mTextHeaderTitle.setOnClickListener(new View.OnClickListener()
@@ -89,7 +89,7 @@ public class LeftPaneController
                 }
                 else
                 {
-                    mLayoutLeft.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
                     mLayoutCollapse.setVisibility(View.VISIBLE);
                 }
             }
